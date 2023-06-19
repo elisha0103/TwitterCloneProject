@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		662B1E032A4033510008DEFA /* UIView+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 662B1E022A4033510008DEFA /* UIView+.swift */; };
 		66452EE22A3C56CD00656C96 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66452EE12A3C56CD00656C96 /* AppDelegate.swift */; };
 		66452EE42A3C56CD00656C96 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66452EE32A3C56CD00656C96 /* SceneDelegate.swift */; };
 		66452EE92A3C56CD00656C96 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 66452EE72A3C56CD00656C96 /* Main.storyboard */; };
@@ -20,6 +21,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		662B1E022A4033510008DEFA /* UIView+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+.swift"; sourceTree = "<group>"; };
 		66452EDE2A3C56CD00656C96 /* TwitterCloneProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TwitterCloneProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		66452EE12A3C56CD00656C96 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		66452EE32A3C56CD00656C96 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -83,6 +85,7 @@
 		66452EF52A3C570300656C96 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				662B1E022A4033510008DEFA /* UIView+.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -202,6 +205,7 @@
 				66452F042A3C5ABF00656C96 /* ConversationsController.swift in Sources */,
 				66452EE22A3C56CD00656C96 /* AppDelegate.swift in Sources */,
 				66452F002A3C5A4700656C96 /* ExploreController.swift in Sources */,
+				662B1E032A4033510008DEFA /* UIView+.swift in Sources */,
 				66452EE42A3C56CD00656C96 /* SceneDelegate.swift in Sources */,
 				66452EFC2A3C579100656C96 /* MainTabController.swift in Sources */,
 				66452EFE2A3C598F00656C96 /* FeedController.swift in Sources */,
