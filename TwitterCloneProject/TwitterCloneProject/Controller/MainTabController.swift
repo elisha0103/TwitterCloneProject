@@ -20,20 +20,27 @@ class MainTabController: UITabBarController {
     
     // MARK: - Helpers
     func configureViewControllers() {
-        let feed = FeedController()
-        feed.tabBarItem.image = UIImage(named: "home_unselected")
+        let feedController = FeedController()
+        let feedNavigation: UINavigationController = templateNavigationController(image: UIImage(named: "home_unselected"), rootViewController: feedController)
         
-        let explore = ExploreController()
-        explore.tabBarItem.image = UIImage(named: "search_unselected")
+        let exploreController = ExploreController()
+        let exploreNavigation: UINavigationController = templateNavigationController(image: UIImage(named: "search_unselected"), rootViewController: exploreController)
         
-        let notifications = NotificationsController()
-        notifications.tabBarItem.image = UIImage(named: "like_unselected")
+        let notificationsController = NotificationsController()
+        let notificationsNavigation: UINavigationController = templateNavigationController(image: UIImage(named: "like_unselected"), rootViewController: notificationsController)
         
-        let conversations = ConversationsController()
-        conversations.tabBarItem.image = UIImage(named: "mail")
+        let conversationsController = ConversationsController()
+        let conversationsNavigation: UINavigationController = templateNavigationController(image: UIImage(named: "mail"), rootViewController: conversationsController)
         
-        viewControllers = [feed, explore, notifications, conversations]
-        self.tabBar.backgroundColor = .white
+        viewControllers = [feedNavigation, exploreNavigation, notificationsNavigation, conversationsNavigation]
+        
     }
     
+    func templateNavigationController(image: UIImage?, rootViewController: UIViewController) -> UINavigationController {
+        let navigation: UINavigationController = UINavigationController(rootViewController: rootViewController)
+        navigation.tabBarItem.image = image
+//        navigation.navigationBar.barTintColor = .white
+        
+        return navigation
+    }
 }
