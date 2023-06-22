@@ -10,6 +10,8 @@ import UIKit
 class RegistrationController: UIViewController {
     
     // MARK: - Properties
+    private let imagePicker = UIImagePickerController()
+    
     private lazy var plusPhotoButton: UIButton = {
         let button: UIButton = UIButton(type: .system)
         button.setImage(UIImage(named: "plus_photo"), for: .normal)
@@ -102,7 +104,7 @@ class RegistrationController: UIViewController {
     
     // MARK: - Selectors
     @objc func handleAddProfilePhoto() {
-        print("Add Photo")
+        present(imagePicker, animated: true,completion: nil)
     }
     
     @objc func handleRegistration() {
@@ -116,6 +118,10 @@ class RegistrationController: UIViewController {
     // MARK: - Helpers
     func configureUI() {
         view.backgroundColor = .twitterBlue
+        
+        imagePicker.delegate = self
+        // image 선택 후 바로 크기 수정모드로 진입
+        imagePicker.allowsEditing = true
         
         view.addSubview(plusPhotoButton)
         plusPhotoButton.centerX(inView: view, topAnchor: view.safeAreaLayoutGuide.topAnchor)
@@ -138,4 +144,25 @@ class RegistrationController: UIViewController {
         alreadyHaveAccountButton.anchor(left: view.safeAreaLayoutGuide.leftAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, right: view.safeAreaLayoutGuide.rightAnchor, paddingLeft: 40, paddingRight: 40)
     }
     
+}
+
+// MARK: - UIImagePickerControllerDelegate
+extension RegistrationController: UIImagePickerControllerDelegate & UINavigationControllerDelegate {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        // 수정모드로 진입 후 이미지를 선택 완료할 때 어떤 이미지를 할당할 것인가
+        // 원본 이미지 또는 크기 등 수정 및 잘린 이미지
+        guard let profileImage = info[.editedImage] as? UIImage else { return }
+        
+        plusPhotoButton.layer.cornerRadius = 128 / 2
+        plusPhotoButton.layer.masksToBounds = true
+        plusPhotoButton.imageView?.contentMode = .scaleToFill
+        plusPhotoButton.imageView?.clipsToBounds = true
+        plusPhotoButton.layer.borderColor = UIColor.white.cgColor
+        plusPhotoButton.layer.borderWidth = 3
+        
+        self.plusPhotoButton.setImage(profileImage.withRenderingMode(.alwaysOriginal), for: .normal)
+        
+        dismiss(animated: true)
+    }
 }
