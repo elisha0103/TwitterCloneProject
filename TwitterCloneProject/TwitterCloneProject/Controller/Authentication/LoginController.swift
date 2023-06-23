@@ -81,7 +81,27 @@ class LoginController: UIViewController {
     }
     
     @objc func handleLogin() {
-        print("Handle login here")
+        guard let email = emailTextField.text else { return }
+        guard let password = passwordTextField.text else { return }
+        
+        AuthService.shared.logUserIn(withEmail: email, password: password) { result, error in
+            if let error = error {
+                print("DEBUG: Error logging in: \(error.localizedDescription)")
+                return
+            }
+            /*
+             로그인할 때의 rootViewController의 View는 .twitterBlue의 배경색만 가진 View가 전부이다.
+             로그인 후 rootViewController의 View UI를 변경해줘야한다.
+             로그인했으므로 currentUser의 값은 nil이 아니므로 다시한번 rootViewController(MainTabController)의
+             authenticateUserAndconfigureUI() 함수를 실행해주면 rootViewController의 View가 새로 업데이트된다.
+             */
+            
+            let mainTabController = self.view.window?.rootViewController as? MainTabController
+            mainTabController?.authenticateUserAndConfigureUI()
+            
+            self.dismiss(animated: true)
+            
+        }
     }
     
     // MARK: - Helpers

@@ -6,11 +6,13 @@
 //
 
 import UIKit
+import Firebase
 
 class RegistrationController: UIViewController {
     
     // MARK: - Properties
     private let imagePicker = UIImagePickerController()
+    private var profileImage: UIImage?
     
     private lazy var plusPhotoButton: UIButton = {
         let button: UIButton = UIButton(type: .system)
@@ -108,7 +110,21 @@ class RegistrationController: UIViewController {
     }
     
     @objc func handleRegistration() {
-        print("SignUP")
+        guard let email = emailTextField.text else { return }
+        guard let password = passwordTextField.text else { return }
+        guard let fullName = fullNameTextField.text else { return }
+        guard let userName = userNameTextField.text else { return }
+        
+        let credentials: AuthCredentials = AuthCredentials(email: email, password: password, fullName: fullName, userName: userName, profileImage: profileImage ?? UIImage(systemName: "person.circle"))
+        
+        AuthService.shared.registerUser(credentials: credentials) { error, ref in
+            do {
+                try Auth.auth().signOut()
+                self.navigationController?.popViewController(animated: true)
+            } catch let error {
+                print("DEBUG: Sign Our error - \(error.localizedDescription)")
+            }
+        }
     }
     
     @objc func handleShowLogIn() {
@@ -153,6 +169,7 @@ extension RegistrationController: UIImagePickerControllerDelegate & UINavigation
         // 수정모드로 진입 후 이미지를 선택 완료할 때 어떤 이미지를 할당할 것인가
         // 원본 이미지 또는 크기 등 수정 및 잘린 이미지
         guard let profileImage = info[.editedImage] as? UIImage else { return }
+        self.profileImage = profileImage
         
         plusPhotoButton.layer.cornerRadius = 128 / 2
         plusPhotoButton.layer.masksToBounds = true
