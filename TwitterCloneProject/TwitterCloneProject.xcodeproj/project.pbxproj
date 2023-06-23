@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		2D5BD6794DA294A4C62E4A25 /* Pods_TwitterCloneProject.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9AEDCFD5E6B9AFE86363D902 /* Pods_TwitterCloneProject.framework */; };
 		661FA0362A45808D00B3A12F /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 661FA0352A45808D00B3A12F /* Constants.swift */; };
-		661FA0382A45833B00B3A12F /* Authentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 661FA0372A45833B00B3A12F /* Authentication.swift */; };
+		661FA03A2A45A51D00B3A12F /* Authentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 661FA0392A45A51D00B3A12F /* Authentication.swift */; };
 		662B1E032A4033510008DEFA /* UIView+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 662B1E022A4033510008DEFA /* UIView+.swift */; };
 		66452EE22A3C56CD00656C96 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66452EE12A3C56CD00656C96 /* AppDelegate.swift */; };
 		66452EE42A3C56CD00656C96 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66452EE32A3C56CD00656C96 /* SceneDelegate.swift */; };
@@ -29,7 +29,7 @@
 
 /* Begin PBXFileReference section */
 		661FA0352A45808D00B3A12F /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
-		661FA0372A45833B00B3A12F /* Authentication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Authentication.swift; sourceTree = "<group>"; };
+		661FA0392A45A51D00B3A12F /* Authentication.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Authentication.swift; sourceTree = "<group>"; };
 		662B1E022A4033510008DEFA /* UIView+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+.swift"; sourceTree = "<group>"; };
 		66452EDE2A3C56CD00656C96 /* TwitterCloneProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TwitterCloneProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		66452EE12A3C56CD00656C96 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -115,6 +115,7 @@
 		66452EF62A3C570800656C96 /* API */ = {
 			isa = PBXGroup;
 			children = (
+				661FA0392A45A51D00B3A12F /* Authentication.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -299,6 +300,7 @@
 				66452F042A3C5ABF00656C96 /* ConversationsController.swift in Sources */,
 				66DE8E062A4184EC006C4DAF /* Utilities.swift in Sources */,
 				66452EE22A3C56CD00656C96 /* AppDelegate.swift in Sources */,
+				661FA03A2A45A51D00B3A12F /* Authentication.swift in Sources */,
 				66452F002A3C5A4700656C96 /* ExploreController.swift in Sources */,
 				66DE8E022A417D9B006C4DAF /* LoginController.swift in Sources */,
 				662B1E032A4033510008DEFA /* UIView+.swift in Sources */,
