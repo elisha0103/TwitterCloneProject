@@ -108,9 +108,6 @@ class RegistrationController: UIViewController {
     }
     
     @objc func handleRegistration() {
-<<<<<<< HEAD
-        print("SignUP")
-=======
         guard let email = emailTextField.text else { return }
         guard let password = passwordTextField.text else { return }
         guard let fullName = fullNameTextField.text else { return }
@@ -143,7 +140,6 @@ class RegistrationController: UIViewController {
         }
         
 
->>>>>>> parent of 3f7bce2 (Feat: Update UI After Authentication)
     }
     
     @objc func handleShowLogIn() {
