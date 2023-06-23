@@ -26,19 +26,21 @@ class MainTabController: UITabBarController {
         super.viewDidLoad()
         
         // logOut()
+        view.backgroundColor = .twitterBlue
         authenticateUserAndConfigureUI()
     }
     
     // MARK: - API
     func authenticateUserAndConfigureUI() {
         if Auth.auth().currentUser == nil {
-            view.backgroundColor = .twitterBlue
-            let logInController = LoginController()
-            self.present(logInController, animated: true)
+            DispatchQueue.main.async {
+                let logInNavigation = UINavigationController(rootViewController: LoginController())
+                logInNavigation.modalPresentationStyle = .fullScreen
+                self.present(logInNavigation, animated: true)
+            }
         } else {
             configureViewControllers()
             configureUI()
-
         }
     }
     
