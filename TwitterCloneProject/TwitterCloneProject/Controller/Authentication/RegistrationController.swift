@@ -114,7 +114,6 @@ class RegistrationController: UIViewController {
         guard let password = passwordTextField.text else { return }
         guard let fullName = fullNameTextField.text else { return }
         guard let userName = userNameTextField.text else { return }
-<<<<<<< HEAD
         guard let imageData = profileImage?.jpegData(compressionQuality: 0.3) else { return }
         
         let fileName = UUID().uuidString
@@ -141,21 +140,6 @@ class RegistrationController: UIViewController {
                 }
             }
         }
-        
-
-=======
-        
-        let credentials: AuthCredentials = AuthCredentials(email: email, password: password, fullName: fullName, userName: userName, profileImage: profileImage ?? UIImage(systemName: "person.circle"))
-        
-        AuthService.shared.registerUser(credentials: credentials) { error, ref in
-            do {
-                try Auth.auth().signOut()
-                self.navigationController?.popViewController(animated: true)
-            } catch let error {
-                print("DEBUG: Sign Our error - \(error.localizedDescription)")
-            }
-        }
->>>>>>> parent of a53c89d (Revert "Merge pull request #6 from elisha0103/feat/FirebaseAuthentication")
     }
     
     @objc func handleShowLogIn() {
