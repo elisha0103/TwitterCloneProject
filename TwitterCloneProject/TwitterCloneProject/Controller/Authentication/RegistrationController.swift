@@ -108,7 +108,42 @@ class RegistrationController: UIViewController {
     }
     
     @objc func handleRegistration() {
+<<<<<<< HEAD
         print("SignUP")
+=======
+        guard let email = emailTextField.text else { return }
+        guard let password = passwordTextField.text else { return }
+        guard let fullName = fullNameTextField.text else { return }
+        guard let userName = userNameTextField.text else { return }
+        guard let imageData = profileImage?.jpegData(compressionQuality: 0.3) else { return }
+        
+        let fileName = UUID().uuidString
+        let storageRef = STORAGE_PROFILE_IMAGES.child(fileName)
+        
+        storageRef.putData(imageData) { meta, error in
+            storageRef.downloadURL { url, error in
+                guard let profileImageUrl = url?.absoluteString else { return }
+                
+                Auth.auth().createUser(withEmail: email, password: password) { result, error in
+                    if let error = error {
+                        print("DEBUG: Error is: \(error.localizedDescription)")
+                        return
+                    }
+                    guard let uid = result?.user.uid else { return }
+                    
+                    let values = ["email": email,
+                                  "fullName": fullName,
+                                  "userName": userName,
+                                  "profileImageUrl": profileImageUrl]
+                    
+                    REF_USERS.child(uid).setValue(values) { error, ref in
+                    }
+                }
+            }
+        }
+        
+
+>>>>>>> parent of 3f7bce2 (Feat: Update UI After Authentication)
     }
     
     @objc func handleShowLogIn() {
