@@ -114,27 +114,34 @@ class RegistrationController: UIViewController {
         guard let password = passwordTextField.text else { return }
         guard let fullName = fullNameTextField.text else { return }
         guard let userName = userNameTextField.text else { return }
+        guard let imageData = profileImage?.jpegData(compressionQuality: 0.3) else { return }
         
-        Auth.auth().createUser(withEmail: email, password: password) { result, error in
-            if let error = error {
-                print("DEBUG: Error is: \(error.localizedDescription)")
-                return
+        let fileName = UUID().uuidString
+        let storageRef = STORAGE_PROFILE_IMAGES.child(fileName)
+        
+        storageRef.putData(imageData) { meta, error in
+            storageRef.downloadURL { url, error in
+                guard let profileImageUrl = url?.absoluteString else { return }
+                
+                Auth.auth().createUser(withEmail: email, password: password) { result, error in
+                    if let error = error {
+                        print("DEBUG: Error is: \(error.localizedDescription)")
+                        return
+                    }
+                    guard let uid = result?.user.uid else { return }
+                    
+                    let values = ["email": email,
+                                  "fullName": fullName,
+                                  "userName": userName,
+                                  "profileImageUrl": profileImageUrl]
+                    
+                    REF_USERS.child(uid).setValue(values) { error, ref in
+                    }
+                }
             }
-            guard let uid = result?.user.uid else { return }
-            
-            let values = ["email": email, "fullName": fullName, "userName": userName]
-            let ref = Database.database().reference().child("users").child(uid)
-            
-            ref.setValue(values) { error, ref in
-                print("Successfully setUpDatabase")
-            }
-            
-            print("DEBUG: Successfully registred user")
-            
         }
         
-        print("DEBUG: Email is \(email)")
-        print("DEBUG: password is \(password)")
+
     }
     
     @objc func handleShowLogIn() {
