@@ -114,34 +114,17 @@ class RegistrationController: UIViewController {
         guard let password = passwordTextField.text else { return }
         guard let fullName = fullNameTextField.text else { return }
         guard let userName = userNameTextField.text else { return }
-        guard let imageData = profileImage?.jpegData(compressionQuality: 0.3) else { return }
         
-        let fileName = UUID().uuidString
-        let storageRef = STORAGE_PROFILE_IMAGES.child(fileName)
+        let credentials: AuthCredentials = AuthCredentials(email: email, password: password, fullName: fullName, userName: userName, profileImage: profileImage ?? UIImage(systemName: "person.circle"))
         
-        storageRef.putData(imageData) { meta, error in
-            storageRef.downloadURL { url, error in
-                guard let profileImageUrl = url?.absoluteString else { return }
-                
-                Auth.auth().createUser(withEmail: email, password: password) { result, error in
-                    if let error = error {
-                        print("DEBUG: Error is: \(error.localizedDescription)")
-                        return
-                    }
-                    guard let uid = result?.user.uid else { return }
-                    
-                    let values = ["email": email,
-                                  "fullName": fullName,
-                                  "userName": userName,
-                                  "profileImageUrl": profileImageUrl]
-                    
-                    REF_USERS.child(uid).setValue(values) { error, ref in
-                    }
-                }
+        AuthService.shared.registerUser(credentials: credentials) { error, ref in
+            do {
+                try Auth.auth().signOut()
+                self.navigationController?.popViewController(animated: true)
+            } catch let error {
+                print("DEBUG: Sign Our error - \(error.localizedDescription)")
             }
         }
-        
-
     }
     
     @objc func handleShowLogIn() {
