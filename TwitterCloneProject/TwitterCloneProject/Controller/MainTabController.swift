@@ -11,6 +11,20 @@ import Firebase
 class MainTabController: UITabBarController {
 
     // MARK: - Properties
+    var user: User? {
+        didSet {
+            /*
+             feedNavigation -> viewControllers의 첫 번째 UINavigationController(FeedController의 UINavigationController)
+             nav.viewControllers -> UINavigation에는 여러 개의 ViewController가 들어갈 수 있는데,
+             nav는 feedNavigation을 가리키고, feedNavigation의 rootViewController는 nav.viewControlers.first(FeedController) 임
+             */
+            guard let feedNavigation = viewControllers?[0] as? UINavigationController else { return }
+            guard let feedController = feedNavigation.viewControllers.first as? FeedController else { return }
+            
+            feedController.user = user
+        }
+    }
+    
     private lazy var actionButton: UIButton = {
         let button: UIButton = UIButton(type: .system)
         button.tintColor = .white
@@ -32,7 +46,9 @@ class MainTabController: UITabBarController {
     
     // MARK: - API
     func fetchUser() {
-        UserService.shared.fetchUser()
+        UserService.shared.fetchUser { user in
+            self.user = user
+        }
         
     }
     
