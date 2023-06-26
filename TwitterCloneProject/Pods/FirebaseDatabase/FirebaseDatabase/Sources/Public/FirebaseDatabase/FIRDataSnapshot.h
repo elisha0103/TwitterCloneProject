@@ -31,8 +31,8 @@ NS_ASSUME_NONNULL_BEGIN
  * location, use a DatabaseReference (e.g. with `setValue(_:)`).
  */
 NS_SWIFT_NAME(DataSnapshot)
-
 @interface FIRDataSnapshot : NSObject
+
 #pragma mark - Navigating and inspecting a snapshot
 
 /**
