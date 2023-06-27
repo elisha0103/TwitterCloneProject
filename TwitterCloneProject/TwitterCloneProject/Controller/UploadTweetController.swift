@@ -55,6 +55,7 @@ class UploadTweetController: UIViewController {
         
 
     }
+    
     // MARK: -  Selectors
     @objc func handleUploadTweet() {
         guard let caption = captionTextView.text else { return }
@@ -73,9 +74,7 @@ class UploadTweetController: UIViewController {
     @objc func handleCancel() {
         dismiss(animated: true)
     }
-    
-    // MARK: - API
-    
+        
     // MARK: - Helpers
     func configureUI() {
         view.backgroundColor = .white
