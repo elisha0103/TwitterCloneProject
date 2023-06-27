@@ -36,6 +36,8 @@ class UploadTweetController: UIViewController {
         return imageView
     }()
     
+    private let captionTextView = CaptionTextView()
+    
     // MARK: - Lifecycle
     init(user: User) {
         self.user = user
@@ -55,7 +57,16 @@ class UploadTweetController: UIViewController {
     }
     // MARK: -  Selectors
     @objc func handleUploadTweet() {
-        print("DEBUG: Upload tweet here")
+        guard let caption = captionTextView.text else { return }
+        
+        TweetService.shared.uploadTweet(caption: caption) { error, ref in
+            if let error = error {
+                print("DEBUG: Failed to upload tweet with error \(error.localizedDescription)")
+                return
+            }
+            
+            self.dismiss(animated: true)
+        }
         
     }
     
@@ -67,11 +78,18 @@ class UploadTweetController: UIViewController {
     
     // MARK: - Helpers
     func configureUI() {
-        configureNavigationBar()
         view.backgroundColor = .white
-        view.addSubview(profileImageView)
-        profileImageView.anchor(top: view.safeAreaLayoutGuide.topAnchor, left: view.safeAreaLayoutGuide.leftAnchor, paddingTop: 16, paddingLeft: 16)
+        configureNavigationBar()
+        
+        let stack = UIStackView(arrangedSubviews: [profileImageView, captionTextView])
+        stack.axis = .horizontal
+        stack.spacing = 12
+        stack.alignment = .top
+        
+        view.addSubview(stack)
+        stack.anchor(top: view.safeAreaLayoutGuide.topAnchor, left: view.safeAreaLayoutGuide.leftAnchor, right: view.safeAreaLayoutGuide.rightAnchor,paddingTop: 16, paddingLeft: 16, paddingRight: 16)
         profileImageView.sd_setImage(with: user.profileImageUrl)
+        
     }
     
     func configureNavigationBar() {
