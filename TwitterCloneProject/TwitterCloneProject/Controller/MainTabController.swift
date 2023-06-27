@@ -92,7 +92,8 @@ class MainTabController: UITabBarController {
     }
     
     func configureViewControllers() {
-        let feedController = FeedController()
+        // feedController는 Controller 자체를 CollectionView 용도로만 사용하기 때문에 UICollectionViewController로 선언
+        let feedController = FeedController(collectionViewLayout: UICollectionViewFlowLayout())
         let feedNavigation: UINavigationController = templateNavigationController(image: UIImage(named: "home_unselected"), rootViewController: feedController)
         
         let exploreController = ExploreController()
