@@ -11,6 +11,20 @@ import Firebase
 class MainTabController: UITabBarController {
 
     // MARK: - Properties
+    var user: User? {
+        didSet {
+            /*
+             feedNavigation -> viewControllers의 첫 번째 UINavigationController(FeedController의 UINavigationController)
+             nav.viewControllers -> UINavigation에는 여러 개의 ViewController가 들어갈 수 있는데,
+             nav는 feedNavigation을 가리키고, feedNavigation의 rootViewController는 nav.viewControlers.first(FeedController) 임
+             */
+            guard let feedNavigation = viewControllers?[0] as? UINavigationController else { return }
+            guard let feedController = feedNavigation.viewControllers.first as? FeedController else { return }
+            
+            feedController.user = user
+        }
+    }
+    
     private lazy var actionButton: UIButton = {
         let button: UIButton = UIButton(type: .system)
         button.tintColor = .white
@@ -31,6 +45,14 @@ class MainTabController: UITabBarController {
     }
     
     // MARK: - API
+    func fetchUser() {
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        UserService.shared.fetchUser(uid: uid) { user in
+            self.user = user
+        }
+        
+    }
+    
     func authenticateUserAndConfigureUI() {
         if Auth.auth().currentUser == nil {
             DispatchQueue.main.async {
@@ -41,6 +63,7 @@ class MainTabController: UITabBarController {
         } else {
             configureViewControllers()
             configureUI()
+            fetchUser()
         }
     }
     
@@ -54,7 +77,11 @@ class MainTabController: UITabBarController {
     
     // MARK: - Selectors
     @objc func actionButtonTapped() {
-        print("123")
+        guard let user = user else { return }
+        let uploadTweetController = UploadTweetController(user: user)
+        let navigation = UINavigationController(rootViewController: uploadTweetController)
+        navigation.modalPresentationStyle = .fullScreen
+        present(navigation, animated: true)
     }
     
     // MARK: - Helpers
@@ -66,7 +93,8 @@ class MainTabController: UITabBarController {
     }
     
     func configureViewControllers() {
-        let feedController = FeedController()
+        // feedController는 Controller 자체를 CollectionView 용도로만 사용하기 때문에 UICollectionViewController로 선언
+        let feedController = FeedController(collectionViewLayout: UICollectionViewFlowLayout())
         let feedNavigation: UINavigationController = templateNavigationController(image: UIImage(named: "home_unselected"), rootViewController: feedController)
         
         let exploreController = ExploreController()
