@@ -33,6 +33,8 @@ struct TweetService {
             tweets.append(tweet)
             
             completion(tweets)
+
         }
+        
     }
 }
