@@ -46,7 +46,8 @@ class MainTabController: UITabBarController {
     
     // MARK: - API
     func fetchUser() {
-        UserService.shared.fetchUser { user in
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        UserService.shared.fetchUser(uid: uid) { user in
             self.user = user
         }
         
@@ -92,7 +93,8 @@ class MainTabController: UITabBarController {
     }
     
     func configureViewControllers() {
-        let feedController = FeedController()
+        // feedController는 Controller 자체를 CollectionView 용도로만 사용하기 때문에 UICollectionViewController로 선언
+        let feedController = FeedController(collectionViewLayout: UICollectionViewFlowLayout())
         let feedNavigation: UINavigationController = templateNavigationController(image: UIImage(named: "home_unselected"), rootViewController: feedController)
         
         let exploreController = ExploreController()
