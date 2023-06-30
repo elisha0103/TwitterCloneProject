@@ -18,7 +18,7 @@ class FeedController: UICollectionViewController {
         }
     }
     
-    let reuseIdentifier = "TweetCell"
+    let tweetCellIdentifier = "TweetCell"
 
     var tweets: [Tweet] = [] {
         didSet { collectionView.reloadData() }
@@ -43,7 +43,7 @@ class FeedController: UICollectionViewController {
     func configureUI() {
         view.backgroundColor = .white
         // collectionView에 사용할 수 있는 customCell 등록
-        collectionView.register(TweetCell.self, forCellWithReuseIdentifier: reuseIdentifier)
+        collectionView.register(TweetCell.self, forCellWithReuseIdentifier: tweetCellIdentifier)
         
         let imageView = UIImageView(image: UIImage(named: "twitter_logo_blue"))
         imageView.contentMode = .scaleAspectFit

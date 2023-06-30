@@ -7,17 +7,27 @@
 
 import UIKit
 
+protocol TweetCellDelegate: AnyObject {
+    func handleProfileImageTapped(_ cell: TweetCell)
+}
+
 class TweetCell: UICollectionViewCell {
     // MARK: - Properties
     var tweet: Tweet? { didSet { configureUI() } }
     
-    private let profileImageView: UIImageView = {
+    weak var delegate: TweetCellDelegate?
+    
+    private lazy var profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.clipsToBounds = true
         imageView.setDimensions(width: 48, height: 48)
         imageView.layer.cornerRadius = 48 / 2
         imageView.backgroundColor = .twitterBlue
+        
+        let tap = UITapGestureRecognizer(target: self, action: #selector(handleProfileImageTapped))
+        imageView.addGestureRecognizer(tap)
+        imageView.isUserInteractionEnabled = true
         
         return imageView
     }()
@@ -86,15 +96,15 @@ class TweetCell: UICollectionViewCell {
         let actionStack = UIStackView(arrangedSubviews: [commentButton, retweetButton, likeButton, shareButton])
         actionStack.axis = .horizontal
         actionStack.spacing = 72
-
+        
         let underlineView = UIView()
         underlineView.backgroundColor = .systemGroupedBackground
-
+        
         addSubview(profileImageView)
         addSubview(stack)
         addSubview(actionStack)
         addSubview(underlineView)
-
+        
         profileImageView.anchor(top: topAnchor, left: leftAnchor, paddingTop: 8, paddingLeft: 8)
         
         stack.anchor(top: profileImageView.topAnchor, left: profileImageView.rightAnchor, right: rightAnchor, paddingLeft: 12, paddingRight: 12)
@@ -113,6 +123,19 @@ class TweetCell: UICollectionViewCell {
     }
     
     // MARK: - Selectors
+    @objc func handleProfileImageTapped() {
+        /*
+         아래 코드를 못 쓰는 이유: UICollectionViewCell은 UIViewController를 가지고 있지 않기 때문에
+         cell에서 navigation와 같은 controller 기능을 사용할 수 없다.
+        let controller = ProfileController(collectionViewLayout: UICollectionViewFlowLayout())
+        navigationController.pushViewController(controller, animated: true)
+         */
+        // delegate는 FeedController이며, FeedController에 정의되어 있는 handleProfileImageTapped를 실행하였고
+        // 매개변수로 해당 셀을 넘겨주는 형식이다. Cell과 Controller를 연결해주는 Delegate 패턴
+        delegate?.handleProfileImageTapped(self)
+
+    }
+    
     @objc func handleCommentTapped() {
         
     }
