@@ -28,17 +28,18 @@ class ProfileController: UICollectionViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         configureCollectionView()
-
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        navigationController?.navigationBar.barStyle = .black
-        navigationController?.navigationBar.isHidden = true
+        self.navigationController?.navigationBar.barStyle = .black
+        self.navigationController?.navigationBar.isHidden = true
+        self.navigationItem.hidesBackButton = true
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = nil
     }
+
 
     // MARK: - Helpers
     func configureCollectionView() {
