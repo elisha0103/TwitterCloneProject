@@ -30,6 +30,10 @@ class ProfileFilterView: UIView {
         
         collectionView.register(ProfileFilterCell.self,  forCellWithReuseIdentifier: profileFilterCellIdendifier)
         
+        // 첫 번째 자동 선택하는 과정
+        let selectedIndexPath = IndexPath(row: 0, section: 0)
+        collectionView.selectItem(at: selectedIndexPath, animated: true, scrollPosition: .left)
+        
         addSubview(collectionView)
         
         // collectionView의 크기를 상위 뷰에 맞게 크기를 지정한다.

@@ -30,6 +30,12 @@ class FeedController: UICollectionViewController {
 
         configureUI()
         fetchTweets()
+        navigationController?.navigationItem.hidesBackButton = true
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        navigationController?.navigationBar.barStyle = .default
+        navigationController?.navigationBar.isHidden = false
     }
     
     // MARK: - API
