@@ -10,13 +10,14 @@ import UIKit
 // MARK: UICollectionViewDataSource
 extension ProfileController {
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+        return tweets.count
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: tweetCellIdentifier, for: indexPath) as? TweetCell
         
         guard let cell = cell else { fatalError("cell Error") }
+        cell.tweet = tweets[indexPath.row]
         
         return cell
     }

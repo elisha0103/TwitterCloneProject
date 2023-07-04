@@ -11,6 +11,8 @@ struct ProfileHeaderViewModel {
     
     private let user: User
     
+    let userNameText: String
+    
     var followersString: NSAttributedString? {
         return attributedText(withValue: 0, text: "followers")
     }
@@ -31,6 +33,7 @@ struct ProfileHeaderViewModel {
     
     init(user: User) {
         self.user = user
+        self.userNameText = "@" + user.userName
     }
     
     func attributedText(withValue value: Int, text: String) -> NSAttributedString {

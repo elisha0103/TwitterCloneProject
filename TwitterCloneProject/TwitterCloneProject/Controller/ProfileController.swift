@@ -13,6 +13,12 @@ class ProfileController: UICollectionViewController {
     // MARK: - Properties
     let user: User
     
+    var tweets: [Tweet] = [] {
+        didSet {
+            collectionView.reloadData()
+        }
+    }
+    
     let tweetCellIdentifier = "TweetCell"
     let headerIdentifier = "ProfileHeader"
     
@@ -29,6 +35,7 @@ class ProfileController: UICollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureCollectionView()
+        fetchTweets()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -38,6 +45,13 @@ class ProfileController: UICollectionViewController {
         self.navigationController?.navigationBar.isHidden = true
         self.navigationItem.hidesBackButton = true
         self.navigationController?.interactivePopGestureRecognizer?.delegate = nil
+    }
+    
+    // MARK: - API
+    func fetchTweets() {
+        TweetService.shared.fetchTweets(forUser: user) { tweets in
+            self.tweets = tweets
+        }
     }
 
 
