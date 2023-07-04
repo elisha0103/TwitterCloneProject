@@ -17,12 +17,38 @@ class ExploreController: UITableViewController {
         }
     }
     
+    // 검색 결과 나타날 ViewController를 searchResultsController이라고 한다.
+    private lazy var searchController = UISearchController(searchResultsController: nil)
+    
+    /*
+     searchResultsController를 활용하지 않고, filterUsers와 isSearchMode 프로퍼티를 활용하여
+     기존의 ExploreController에 검색 결과를 나타낼 것
+     */
+    
+    var filterUsers: [User] = [] {
+        didSet {
+            tableView.reloadData()
+        }
+    }
+    
+    var isSearchMode: Bool { // 검색모드일 경우, 검색 결과를 반환하도록 함
+        return searchController.isActive && !(searchController.searchBar.text?.isEmpty ?? true)
+    }
+    
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
 
         configureUI()
+        configureSearchController()
         fetchUsers()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        navigationController?.navigationBar.barStyle = .default
+        navigationController?.navigationBar.isHidden = false
     }
     
     // MARK: - API
@@ -42,5 +68,14 @@ class ExploreController: UITableViewController {
         tableView.register(UserCell.self, forCellReuseIdentifier: exploreCellIdentifier)
         tableView.rowHeight = 60
         tableView.separatorStyle = .none
+    }
+    
+    func configureSearchController() {
+        searchController.searchResultsUpdater = self // 서치바 delegate 설정(입력 텍스트 감지)
+        searchController.obscuresBackgroundDuringPresentation = false // 서치바 활성화동안 배경 어두워지지 않게
+        searchController.hidesNavigationBarDuringPresentation = false // 서치바 활성화동안 NavigationBar 사라지지 않게
+        searchController.searchBar.placeholder = "Search for a user"
+        navigationItem.searchController = searchController
+        definesPresentationContext = false
     }
 }
