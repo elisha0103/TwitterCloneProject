@@ -18,7 +18,7 @@ class FeedController: UICollectionViewController {
         }
     }
     
-    let reuseIdentifier = "TweetCell"
+    let tweetCellIdentifier = "TweetCell"
 
     var tweets: [Tweet] = [] {
         didSet { collectionView.reloadData() }
@@ -27,9 +27,15 @@ class FeedController: UICollectionViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-
         configureUI()
         fetchTweets()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        navigationController?.navigationBar.barStyle = .default
+        navigationController?.navigationBar.isHidden = false
     }
     
     // MARK: - API
@@ -43,7 +49,7 @@ class FeedController: UICollectionViewController {
     func configureUI() {
         view.backgroundColor = .white
         // collectionView에 사용할 수 있는 customCell 등록
-        collectionView.register(TweetCell.self, forCellWithReuseIdentifier: reuseIdentifier)
+        collectionView.register(TweetCell.self, forCellWithReuseIdentifier: tweetCellIdentifier)
         
         let imageView = UIImageView(image: UIImage(named: "twitter_logo_blue"))
         imageView.contentMode = .scaleAspectFit
