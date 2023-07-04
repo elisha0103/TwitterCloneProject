@@ -165,7 +165,7 @@ class ProfileHeader: UICollectionReusableView {
     
     // MARK: - Selectors
     @objc func handleEditProfileFollow() {
-        
+        delegate?.handleEditProfileFollow(self)
     }
     
     @objc func handleDismissal() {
@@ -173,7 +173,7 @@ class ProfileHeader: UICollectionReusableView {
     }
     
     @objc func handleFollowersTapped() {
-        
+
     }
     
     @objc func handleFollowingTapped() {
