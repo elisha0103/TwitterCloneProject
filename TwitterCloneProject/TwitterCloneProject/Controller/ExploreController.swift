@@ -7,9 +7,10 @@
 
 import UIKit
 
-class ExploreController: UIViewController {
+class ExploreController: UITableViewController {
 
     // MARK: - Properties
+    let exploreCellIdentifier: String = "exploreCell"
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -20,8 +21,11 @@ class ExploreController: UIViewController {
     
     // MARK: - Helpers
     func configureUI() {
-        view.backgroundColor = .white
-        
+        view.backgroundColor = .systemBackground
         navigationItem.title = "Explore"
+        
+        tableView.register(UserCell.self, forCellReuseIdentifier: exploreCellIdentifier)
+        tableView.rowHeight = 60
+        tableView.separatorStyle = .none
     }
 }
