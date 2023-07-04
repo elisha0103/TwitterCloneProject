@@ -11,7 +11,7 @@ import UIKit
 
 class ProfileController: UICollectionViewController {
     // MARK: - Properties
-    let user: User
+    var user: User
     
     var tweets: [Tweet] = [] {
         didSet {
