@@ -11,12 +11,27 @@ class ExploreController: UITableViewController {
 
     // MARK: - Properties
     let exploreCellIdentifier: String = "exploreCell"
+    var users: [User] = [] {
+        didSet {
+            tableView.reloadData()
+        }
+    }
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
 
         configureUI()
+        fetchUsers()
+    }
+    
+    // MARK: - API
+    func fetchUsers() {
+        UserService.shared.fetchUsers { users in
+            users.forEach { user in
+                self.users = users
+            }
+        }
     }
     
     // MARK: - Helpers
