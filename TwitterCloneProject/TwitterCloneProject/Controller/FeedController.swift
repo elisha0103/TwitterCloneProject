@@ -47,7 +47,7 @@ class FeedController: UICollectionViewController {
     
     // MARK: - Helpers
     func configureUI() {
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
         // collectionView에 사용할 수 있는 customCell 등록
         collectionView.register(TweetCell.self, forCellWithReuseIdentifier: tweetCellIdentifier)
         

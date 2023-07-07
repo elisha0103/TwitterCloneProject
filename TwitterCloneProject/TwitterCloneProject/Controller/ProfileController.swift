@@ -11,7 +11,7 @@ import UIKit
 
 class ProfileController: UICollectionViewController {
     // MARK: - Properties
-    let user: User
+    var user: User
     
     var tweets: [Tweet] = [] {
         didSet {
@@ -36,6 +36,8 @@ class ProfileController: UICollectionViewController {
         super.viewDidLoad()
         configureCollectionView()
         fetchTweets()
+        checkIfUserIsFollowed()
+        fetchUserStats()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -53,7 +55,20 @@ class ProfileController: UICollectionViewController {
             self.tweets = tweets
         }
     }
-
+    
+    func checkIfUserIsFollowed() {
+        UserService.shared.checkIfUserIsFollowed(uid: user.uid) { isFollowed in
+            self.user.isFollowed = isFollowed
+            self.collectionView.reloadData() // 초기 데이터에서 파베 데이터로 변경된 결과를 반영하기 위함
+        }
+    }
+    
+    func fetchUserStats() {
+        UserService.shared.fetchUserState(uid: user.uid) { stats in
+            self.user.stats = stats
+            self.collectionView.reloadData()
+        }
+    }
 
     // MARK: - Helpers
     func configureCollectionView() {
