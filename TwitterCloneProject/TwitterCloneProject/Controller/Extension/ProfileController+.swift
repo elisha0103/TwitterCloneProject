@@ -59,7 +59,12 @@ extension ProfileController: ProfileHeaderDelegate {
     
     func handleEditProfileFollow(_ header: ProfileHeader) {
         
-        print("DEBUG: User is followed is \(user.isFollowed) before button tap")
+        if user.isCurrentUser {
+            print("DEBUG: Show edit profile controller")
+            return
+        }
+        
+        // 본인 계정이 아닌경우
         if user.isFollowed { // Unfollow 하는 로직
             UserService.shared.unfollowUser(uid: user.uid) { error, ref in
                 print("DEBUG: Did complete follow in backend...")
