@@ -60,16 +60,17 @@ extension ProfileController: ProfileHeaderDelegate {
     func handleEditProfileFollow(_ header: ProfileHeader) {
         
         print("DEBUG: User is followed is \(user.isFollowed) before button tap")
-        if user.isFollowed {
+        if user.isFollowed { // Unfollow 하는 로직
             UserService.shared.unfollowUser(uid: user.uid) { error, ref in
-                // TODO: - follow User -> change Follow Button
                 print("DEBUG: Did complete follow in backend...")
                 self.user.isFollowed = false
+                self.collectionView.reloadData()
             }
-        } else {
+        } else { // Follow 하는 로직
             UserService.shared.followUser(uid: user.uid) { error, ref in
                 print("DEBUG: Did unfollow user in backed...")
                 self.user.isFollowed = true
+                self.collectionView.reloadData()
             }
         }
     }
