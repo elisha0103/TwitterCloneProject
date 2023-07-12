@@ -14,6 +14,12 @@ class TweetHeader: UICollectionReusableView {
         didSet { configure() }
     }
     
+    var user: User? {
+        didSet { configureOptionButton() }
+    }
+    
+    weak var delegate: TweetHeaderDelegate?
+    
     private lazy var profileImageView: UIImageView = {
        let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
@@ -179,6 +185,8 @@ class TweetHeader: UICollectionReusableView {
     
     @objc func showActionSheet() {
         print("DEBUG: Handle show action sheet")
+        
+        
     }
     
     @objc func handleCommentTapped() {
@@ -219,5 +227,34 @@ class TweetHeader: UICollectionReusableView {
         button.setDimensions(width: 20, height: 20)
         
         return button
+    }
+    
+    func configureOptionButton() {
+        guard let user = user else { return }
+        
+        let headerViewModel = TweetHeaderViewModel(user: user)
+                
+        let interactActionTitle: String = headerViewModel.actionButtonTitle
+        
+        guard let interactActionImage: UIImage = headerViewModel.actionButtonImage else { return }
+        
+        let interactAction = UIAction(title: interactActionTitle, image: interactActionImage) { _ in
+            print("DEBUG: interact Action")
+            self.delegate?.handleInteractAction()
+        }
+        
+        if user.isCurrentUser {
+            interactAction.attributes = .destructive
+        }
+        
+        let reportAction = UIAction(title: "Report Tweet") { _ in
+            print("DEBUG: reportAction")
+            self.delegate?.handleReportAction()
+        }
+        
+        optionsButton.menu = UIMenu(identifier: nil, children: [interactAction, reportAction])
+        
+        optionsButton.showsMenuAsPrimaryAction = true
+
     }
 }
