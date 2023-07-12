@@ -13,6 +13,9 @@ class TweetController: UICollectionViewController {
     let tweet: Tweet
     let reuseIdentifier = "TweetCell"
     let headerIdentifier = "TweetHeader"
+    var replies: [Tweet] = [] {
+        didSet { collectionView.reloadData() }
+    }
     
     // MARK: - Lifecycle
     init(tweet: Tweet) {
@@ -27,8 +30,14 @@ class TweetController: UICollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureCollectionView()
-        
-        print("DEBUG: Tweet caption is \(tweet.caption)")
+        fetchReplies()
+    }
+    
+    // MARK: - API
+    func fetchReplies() {
+        TweetService.shared.fetchReplies(forTweet: tweet) { tweets in
+            self.replies = tweets
+        }
     }
     
     // MARK: - Helpers

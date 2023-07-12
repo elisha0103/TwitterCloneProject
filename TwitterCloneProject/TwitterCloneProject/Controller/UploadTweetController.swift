@@ -39,6 +39,15 @@ class UploadTweetController: UIViewController {
         return imageView
     }()
     
+    private let replyLabel: UILabel = {
+       let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 14)
+        label.textColor = .lightGray
+        label.text = "replying to @spiderman"
+        
+        return label
+    }()
+    
     private let captionTextView = CaptionTextView()
     
     // MARK: - Lifecycle
@@ -70,7 +79,7 @@ class UploadTweetController: UIViewController {
     @objc func handleUploadTweet() {
         guard let caption = captionTextView.text else { return }
         
-        TweetService.shared.uploadTweet(caption: caption) { error, ref in
+        TweetService.shared.uploadTweet(caption: caption, type: config) { error, ref in
             if let error = error {
                 print("DEBUG: Failed to upload tweet with error \(error.localizedDescription)")
                 return
@@ -90,14 +99,26 @@ class UploadTweetController: UIViewController {
         view.backgroundColor = .white
         configureNavigationBar()
         
-        let stack = UIStackView(arrangedSubviews: [profileImageView, captionTextView])
-        stack.axis = .horizontal
+//        captionTextView.backgroundColor = .red
+        let imageCaptionStack = UIStackView(arrangedSubviews: [profileImageView, captionTextView])
+        imageCaptionStack.axis = .horizontal
+        imageCaptionStack.spacing = 12
+        imageCaptionStack.alignment = .leading
+        
+        let stack = UIStackView(arrangedSubviews: [replyLabel, imageCaptionStack])
+        stack.axis = .vertical
         stack.spacing = 12
-        stack.alignment = .top
         
         view.addSubview(stack)
-        stack.anchor(top: view.safeAreaLayoutGuide.topAnchor, left: view.safeAreaLayoutGuide.leftAnchor, right: view.safeAreaLayoutGuide.rightAnchor,paddingTop: 16, paddingLeft: 16, paddingRight: 16)
+        stack.anchor(top: view.safeAreaLayoutGuide.topAnchor, left: view.leftAnchor, right: view.rightAnchor, paddingTop: 16, paddingLeft: 16, paddingRight: 16)
+        
         profileImageView.sd_setImage(with: user.profileImageUrl)
+        actionButton.setTitle(uploadTweetViewModel.actionButtonTitle, for: .normal)
+        captionTextView.placeholderLabel.text = uploadTweetViewModel.placeholderText
+        
+        replyLabel.isHidden = !uploadTweetViewModel.shouldShowReplyLabel
+        guard let replyText = uploadTweetViewModel.replyText else { return }
+        replyLabel.text = replyText
         
     }
     

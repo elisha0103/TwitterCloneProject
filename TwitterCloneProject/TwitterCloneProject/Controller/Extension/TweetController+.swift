@@ -12,7 +12,7 @@ extension TweetController {
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        return 3
+        return replies.count
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -20,6 +20,7 @@ extension TweetController {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as? TweetCell
         
         guard let cell = cell else { fatalError("TweetController Cell Error") }
+        cell.tweet = replies[indexPath.row]
         
         return cell
     }

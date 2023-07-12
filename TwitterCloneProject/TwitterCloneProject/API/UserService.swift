@@ -10,7 +10,6 @@ import Firebase
 
 struct UserService {
     static let shared = UserService()
-    typealias DatabaseCompletion = (Error?, DatabaseReference) -> Void
     
     func fetchUser(uid: String, completion: @escaping(User) -> Void) {        
         REF_USERS.child(uid).observeSingleEvent(of: .value) { snapshot in
