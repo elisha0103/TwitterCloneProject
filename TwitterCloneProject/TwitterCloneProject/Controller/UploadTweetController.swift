@@ -7,9 +7,12 @@
 
 import UIKit
 
+
 class UploadTweetController: UIViewController {
     // MARK: - Properties
     private let user: User
+    private let config: UploadTweetConfiguration // Tweet 등록, Reply 등록 ViewController 선택할 플래그 변수
+    private lazy var uploadTweetViewModel = UploadTweetViewModel(config: config)
     
     private lazy var actionButton: UIButton = {
         let button = UIButton(type: .system)
@@ -36,11 +39,21 @@ class UploadTweetController: UIViewController {
         return imageView
     }()
     
+    private let replyLabel: UILabel = {
+       let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 14)
+        label.textColor = .lightGray
+        label.text = "replying to @spiderman"
+        
+        return label
+    }()
+    
     private let captionTextView = CaptionTextView()
     
     // MARK: - Lifecycle
-    init(user: User) {
+    init(user: User, config: UploadTweetConfiguration) {
         self.user = user
+        self.config = config
         
         super.init(nibName: nil, bundle: nil)
     }
@@ -53,6 +66,12 @@ class UploadTweetController: UIViewController {
         super.viewDidLoad()
         configureUI()
         
+        switch config {
+        case .tweet:
+            print("DEBUG: Config is tweet")
+        case .reply(let tweet):
+            print("DEBUG: Replying to \(tweet.caption)")
+        }
 
     }
     
@@ -60,7 +79,7 @@ class UploadTweetController: UIViewController {
     @objc func handleUploadTweet() {
         guard let caption = captionTextView.text else { return }
         
-        TweetService.shared.uploadTweet(caption: caption) { error, ref in
+        TweetService.shared.uploadTweet(caption: caption, type: config) { error, ref in
             if let error = error {
                 print("DEBUG: Failed to upload tweet with error \(error.localizedDescription)")
                 return
@@ -80,14 +99,26 @@ class UploadTweetController: UIViewController {
         view.backgroundColor = .white
         configureNavigationBar()
         
-        let stack = UIStackView(arrangedSubviews: [profileImageView, captionTextView])
-        stack.axis = .horizontal
+//        captionTextView.backgroundColor = .red
+        let imageCaptionStack = UIStackView(arrangedSubviews: [profileImageView, captionTextView])
+        imageCaptionStack.axis = .horizontal
+        imageCaptionStack.spacing = 12
+        imageCaptionStack.alignment = .leading
+        
+        let stack = UIStackView(arrangedSubviews: [replyLabel, imageCaptionStack])
+        stack.axis = .vertical
         stack.spacing = 12
-        stack.alignment = .top
         
         view.addSubview(stack)
-        stack.anchor(top: view.safeAreaLayoutGuide.topAnchor, left: view.safeAreaLayoutGuide.leftAnchor, right: view.safeAreaLayoutGuide.rightAnchor,paddingTop: 16, paddingLeft: 16, paddingRight: 16)
+        stack.anchor(top: view.safeAreaLayoutGuide.topAnchor, left: view.leftAnchor, right: view.rightAnchor, paddingTop: 16, paddingLeft: 16, paddingRight: 16)
+        
         profileImageView.sd_setImage(with: user.profileImageUrl)
+        actionButton.setTitle(uploadTweetViewModel.actionButtonTitle, for: .normal)
+        captionTextView.placeholderLabel.text = uploadTweetViewModel.placeholderText
+        
+        replyLabel.isHidden = !uploadTweetViewModel.shouldShowReplyLabel
+        guard let replyText = uploadTweetViewModel.replyText else { return }
+        replyLabel.text = replyText
         
     }
     
