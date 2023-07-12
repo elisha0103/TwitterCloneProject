@@ -29,23 +29,3 @@ struct ActionSheetViewModel {
         self.user = user
     }
 }
-
-enum ActionSheetOptions {
-    case follow(User)
-    case unfollow(User)
-    case report
-    case delete
-    
-    var description: String {
-        switch self {
-        case .follow(let user):
-            return "Follow @\(user.userName)"
-        case .unfollow(let user):
-            return "Unfollow @\(user.userName)"
-        case .report:
-            return "Report Tweet"
-        case .delete:
-            return "Delete Tweet"
-        }
-    }
-}
