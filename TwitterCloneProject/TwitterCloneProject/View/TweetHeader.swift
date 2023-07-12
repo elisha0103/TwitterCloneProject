@@ -8,14 +8,20 @@
 import UIKit
 
 class TweetHeader: UICollectionReusableView {
-
+    
     // MARK: - Properties
     var tweet: Tweet? {
         didSet { configure() }
     }
     
+    var user: User? {
+        didSet { configureOptionButton() }
+    }
+    
+    weak var delegate: TweetHeaderDelegate?
+    
     private lazy var profileImageView: UIImageView = {
-       let imageView = UIImageView()
+        let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.clipsToBounds = true
         imageView.setDimensions(width: 48, height: 48)
@@ -30,7 +36,7 @@ class TweetHeader: UICollectionReusableView {
     }()
     
     private let fullNameLabel: UILabel = {
-       let label = UILabel()
+        let label = UILabel()
         label.font = UIFont.boldSystemFont(ofSize: 20)
         label.text = "Fullname"
         
@@ -38,7 +44,7 @@ class TweetHeader: UICollectionReusableView {
     }()
     
     private let userNameLabel: UILabel = {
-       let label = UILabel()
+        let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 16)
         label.textColor = .lightGray
         label.text = "UserName"
@@ -56,7 +62,7 @@ class TweetHeader: UICollectionReusableView {
     }()
     
     private let dateLabel: UILabel = {
-       let label = UILabel()
+        let label = UILabel()
         label.textColor = .lightGray
         label.font = UIFont.systemFont(ofSize: 14)
         label.textAlignment = .left
@@ -69,7 +75,6 @@ class TweetHeader: UICollectionReusableView {
         let button = UIButton(type: .system)
         button.tintColor = .lightGray
         button.setImage(UIImage(named: "down_arrow_24pt"), for: .normal)
-        button.addTarget(self, action: #selector(showActionSheet), for: .touchUpInside)
         
         return button
     }()
@@ -104,28 +109,28 @@ class TweetHeader: UICollectionReusableView {
     }()
     
     private lazy var commentButton: UIButton = {
-       let button = createButton(withImageName: "comment")
+        let button = createButton(withImageName: "comment")
         button.addTarget(self, action: #selector(handleCommentTapped), for: .touchUpInside)
         
         return button
     }()
     
     private lazy var retweetButton: UIButton = {
-       let button = createButton(withImageName: "retweet")
+        let button = createButton(withImageName: "retweet")
         button.addTarget(self, action: #selector(handleRetweetTapped), for: .touchUpInside)
         
         return button
     }()
     
     private lazy var likeButton: UIButton = {
-       let button = createButton(withImageName: "like")
+        let button = createButton(withImageName: "like")
         button.addTarget(self, action: #selector(handleLikeTapped), for: .touchUpInside)
         
         return button
     }()
     
     private lazy var shareButton: UIButton = {
-       let button = createButton(withImageName: "share")
+        let button = createButton(withImageName: "share")
         button.addTarget(self, action: #selector(handleShareTapped), for: .touchUpInside)
         
         return button
@@ -179,10 +184,12 @@ class TweetHeader: UICollectionReusableView {
     
     @objc func showActionSheet() {
         print("DEBUG: Handle show action sheet")
+        
+        
     }
     
     @objc func handleCommentTapped() {
-    
+        
     }
     
     @objc func handleRetweetTapped() {
@@ -219,5 +226,41 @@ class TweetHeader: UICollectionReusableView {
         button.setDimensions(width: 20, height: 20)
         
         return button
+    }
+    
+    func configureOptionButton() {
+        guard let user = user else { return }
+        
+        let headerViewModel = TweetHeaderViewModel(user: user)
+        
+        let actionButtons = headerViewModel.options.map { option in
+            guard let image = headerViewModel.actionButtonImage(option: option) else { fatalError("ActionButton Image Error") }
+            var action: UIAction
+
+            switch option {
+            case .delete, .follow(_), .unfollow(_):
+                // user.isCurrentUser ? true(속성 빨간색) : false(속성 없음)
+                action = UIAction(title: option.description, image: image, attributes: user.isCurrentUser ? .destructive : []) { _ in
+                    print("DEBUG: interact Action")
+                    self.delegate?.handleInteractAction()
+                }
+                
+            case .report:
+                action = UIAction(title: option.description, image: image) { _ in
+                    self.delegate?.handleReportAction()
+                }
+                
+            case .blockUser:
+                action = UIAction(title: option.description, image: image) { _ in
+                    print("DEBUG: BLOCK USER")
+                }
+            }
+            
+            return action
+        }
+        
+        optionsButton.menu = UIMenu(identifier: nil, children: actionButtons)
+        optionsButton.showsMenuAsPrimaryAction = true
+        
     }
 }
