@@ -32,6 +32,8 @@ extension TweetController {
         let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerIdentifier, for: indexPath) as? TweetHeader
         guard let header = header else { fatalError("TweetController Header Error") }
         header.tweet = tweet
+        header.user = user
+        header.delegate = self
         
         return header
     }
@@ -53,3 +55,35 @@ extension TweetController: UICollectionViewDelegateFlowLayout {
     }
 }
  
+// MARK: - TweetHeaderDelegate
+extension TweetController: TweetHeaderDelegate {
+    func handleInteractAction() {
+        
+        
+        if user.isCurrentUser {
+            print("DEBUG: DELETE TWEET ACTION")
+            navigationController?.popViewController(animated: true)
+//            TweetService.shared.deleteTweet(forTweet: tweet) { error, ref in
+//            navigationController?.popViewController(animated: true)
+//            }
+        } else if user.isFollowed {
+            UserService.shared.unfollowUser(uid: user.uid) { error, ref in
+                print("DEBUG: Did complete follow in backend...")
+                self.user.isFollowed = false
+                self.collectionView.reloadData()
+            }
+        } else {
+            UserService.shared.followUser(uid: user.uid) { error, ref in
+                print("DEBUG: Did unfollow user in backed...")
+                self.user.isFollowed = true
+                self.collectionView.reloadData()
+            }
+        }
+    }
+    
+    func handleReportAction() {
+        print("DEBUG: REPORT TWEET ACTION")
+    }
+    
+    
+}

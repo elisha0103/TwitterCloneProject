@@ -11,6 +11,7 @@ class TweetController: UICollectionViewController {
 
     // MARK: - Properties
     let tweet: Tweet
+    var user: User
     let reuseIdentifier = "TweetCell"
     let headerIdentifier = "TweetHeader"
     var replies: [Tweet] = [] {
@@ -18,8 +19,9 @@ class TweetController: UICollectionViewController {
     }
     
     // MARK: - Lifecycle
-    init(tweet: Tweet) {
+    init(tweet: Tweet, user: User) {
         self.tweet = tweet
+        self.user = user
         super.init(collectionViewLayout: UICollectionViewFlowLayout())
     }
     
@@ -31,12 +33,20 @@ class TweetController: UICollectionViewController {
         super.viewDidLoad()
         configureCollectionView()
         fetchReplies()
+        checkIfUserIsFollowed()
     }
     
     // MARK: - API
     func fetchReplies() {
         TweetService.shared.fetchReplies(forTweet: tweet) { tweets in
             self.replies = tweets
+        }
+    }
+    
+    func checkIfUserIsFollowed() {
+        UserService.shared.checkIfUserIsFollowed(uid: tweet.user.uid) { isFollowed in
+            self.user.isFollowed = isFollowed
+            self.collectionView.reloadData() // 초기 데이터에서 파베 데이터로 변경된 결과를 반영하기 위함
         }
     }
     

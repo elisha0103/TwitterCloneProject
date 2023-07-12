@@ -86,4 +86,10 @@ struct TweetService {
             }
         }
     }
+    
+    func deleteTweet(forTweet tweet: Tweet, completion: @escaping(DatabaseCompletion)) {
+        REF_TWEETS.child(tweet.tweetID).removeValue { error, ref in
+            REF_TWEET_REPLIES.child(tweet.tweetID).removeValue(completionBlock: completion)
+        }
+    }
 }
