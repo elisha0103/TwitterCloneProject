@@ -75,7 +75,6 @@ class TweetHeader: UICollectionReusableView {
         let button = UIButton(type: .system)
         button.tintColor = .lightGray
         button.setImage(UIImage(named: "down_arrow_24pt"), for: .normal)
-        button.addTarget(self, action: #selector(showActionSheet), for: .touchUpInside)
         
         return button
     }()
@@ -235,21 +234,21 @@ class TweetHeader: UICollectionReusableView {
         let headerViewModel = TweetHeaderViewModel(user: user)
                 
         let interactActionTitle: String = headerViewModel.actionButtonTitle
-        
         guard let interactActionImage: UIImage = headerViewModel.actionButtonImage else { return }
         
-        let interactAction = UIAction(title: interactActionTitle, image: interactActionImage) { _ in
-            print("DEBUG: interact Action")
-            self.delegate?.handleInteractAction()
+        // user.isCurrentUser ? true(속성 빨간색) : false(속성 없음)
+        let interactAction = UIAction(title: interactActionTitle, image: interactActionImage, attributes: user.isCurrentUser ? .destructive : []) { _ in
+                        print("DEBUG: interact Action")
+                        self.delegate?.handleInteractAction()
+
         }
-        
-        if user.isCurrentUser {
-            interactAction.attributes = .destructive
-        }
-        
         let reportAction = UIAction(title: "Report Tweet") { _ in
             print("DEBUG: reportAction")
             self.delegate?.handleReportAction()
+        }
+
+        if user.isCurrentUser {
+            interactAction.attributes = .destructive
         }
         
         optionsButton.menu = UIMenu(identifier: nil, children: [interactAction, reportAction])
