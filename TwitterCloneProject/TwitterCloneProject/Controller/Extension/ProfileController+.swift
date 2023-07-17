@@ -76,6 +76,8 @@ extension ProfileController: ProfileHeaderDelegate {
                 print("DEBUG: Did unfollow user in backed...")
                 self.user.isFollowed = true
                 self.collectionView.reloadData()
+                
+                NotificationService.shared.uploadNotification(type: .follow, user: self.user)
             }
         }
     }
