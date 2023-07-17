@@ -67,6 +67,11 @@ extension FeedController: TweetCellDelegate {
             cell.tweet?.didLike.toggle()
             let likes = tweet.didLike ? tweet.likes - 1 : tweet.likes + 1
             cell.tweet?.likes = likes
+            
+            // only upload notification if tweet6 is being liked
+            guard !tweet.didLike else { return } // didLike == true 통과
+            
+            NotificationService.shared.uploadNotification(type: .like, tweet: tweet)
         }
     }
 }
