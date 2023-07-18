@@ -10,14 +10,14 @@ import UIKit
 // MARK: UICollectionViewDataSource
 extension ProfileController {
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return tweets.count
+        return currentDataSource.count
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: tweetCellIdentifier, for: indexPath) as? TweetCell
         
         guard let cell = cell else { fatalError("cell Error") }
-        cell.tweet = tweets[indexPath.row]
+        cell.tweet = currentDataSource[indexPath.row]
         
         return cell
     }
@@ -80,5 +80,9 @@ extension ProfileController: ProfileHeaderDelegate {
                 NotificationService.shared.uploadNotification(type: .follow, user: self.user)
             }
         }
+    }
+    
+    func didSelect(filter: ProfileFilterOptions) {
+        self.selectedFilter = filter
     }
 }

@@ -7,15 +7,23 @@
 
 import UIKit
 
-
-
 class ProfileController: UICollectionViewController {
     // MARK: - Properties
     var user: User
     
-    var tweets: [Tweet] = [] {
-        didSet {
-            collectionView.reloadData()
+    var selectedFilter: ProfileFilterOptions = .tweets {
+        didSet { collectionView.reloadData() }
+    }
+    
+    var tweets: [Tweet] = []
+    var likedTweets: [Tweet] = []
+    var replies: [Tweet] = []
+    
+    var currentDataSource: [Tweet] { // 필터에 의해 선택된 트윗 데이터의 버킷
+        switch selectedFilter {
+        case .tweets: return tweets
+        case .replies: return replies
+        case .likes: return likedTweets
         }
     }
     
@@ -53,6 +61,7 @@ class ProfileController: UICollectionViewController {
     func fetchTweets() {
         TweetService.shared.fetchTweets(forUser: user) { tweets in
             self.tweets = tweets
+            self.collectionView.reloadData()
         }
     }
     
