@@ -21,8 +21,8 @@ struct TweetViewModel {
         formatter.maximumUnitCount = 1
         formatter.unitsStyle = .abbreviated
         let now = Date()
-        return formatter.string(from: tweet.timestamp ?? now, to: now) ?? "-1"
         
+        return formatter.string(from: tweet.timestamp ?? now, to: now) ?? "-1"
     }
     
     var userNameText: String {
