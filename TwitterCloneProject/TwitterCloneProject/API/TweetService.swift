@@ -51,6 +51,19 @@ struct TweetService {
         }
     }
     
+    // 한 개의 트윗 fetch
+    func fetchTweet(withTweetID tweetID: String, completion: @escaping(Tweet) -> Void) {
+        REF_TWEETS.child(tweetID).observeSingleEvent(of: .value) { snapshot in
+            guard let dictionary = snapshot.value as? [String: Any] else { return }
+            guard let uid = dictionary["uid"] as? String else { return }
+            
+            UserService.shared.fetchUser(uid: uid) { user in
+                let tweet = Tweet(tweetID: tweetID, user: user, dictionary: dictionary)
+                completion(tweet)
+            }
+        }
+    }
+    
     // 유저 트윗 fetch
     func fetchTweets(forUser user: User, completion: @escaping([Tweet]) -> Void) {
         var tweets: [Tweet] = []
@@ -58,15 +71,9 @@ struct TweetService {
         REF_USER_TWEETS.child(user.uid).observe(.childAdded) {snapshot in
             let tweetID = snapshot.key
             
-            REF_TWEETS.child(tweetID).observeSingleEvent(of: .value) { snapshot in
-                guard let dictionary = snapshot.value as? [String: Any] else { return }
-                guard let uid = dictionary["uid"] as? String else { return }
-                
-                UserService.shared.fetchUser(uid: uid) { user in
-                    let tweet = Tweet(tweetID: tweetID, user: user, dictionary: dictionary)
-                    tweets.append(tweet)
-                    completion(tweets)
-                }
+            self.fetchTweet(withTweetID: tweetID) { tweet in
+                tweets.append(tweet)
+                completion(tweets)
             }
         }
     }

@@ -24,11 +24,37 @@ class NotificationsController: UITableViewController {
         fetchNotifications()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        navigationController?.navigationBar.isHidden = false
+        navigationController?.navigationBar.barStyle = .default
+    }
+    
     // MARK: - API
     func fetchNotifications() {
+        refreshControl?.beginRefreshing()
         NotificationService.shared.fetchNotifications { notifications in
             self.notifications = notifications
+            self.checkIfUserIsFollowed(notifications: notifications)
+            self.refreshControl?.endRefreshing()
         }
+    }
+    
+    func checkIfUserIsFollowed(notifications: [Notification]) {
+        for (index, notification) in notifications.enumerated() {
+            if case .follow = notification.type {
+                let user = notification.user
+                UserService.shared.checkIfUserIsFollowed(uid: user.uid) { isFollowed in
+                    self.notifications[index].user.isFollowed = isFollowed
+                }
+            }
+        }
+    }
+    
+    // MARK: - Selectors
+    @objc func handleRefresh() {
+        fetchNotifications()
     }
     
     // MARK: - Helpers
@@ -39,5 +65,9 @@ class NotificationsController: UITableViewController {
         tableView.register(NotificationCell.self, forCellReuseIdentifier: reuseIdentifier)
         tableView.rowHeight = 60
         tableView.separatorStyle = .none
+        
+        let refreshControl = UIRefreshControl()
+        tableView.refreshControl = refreshControl
+        refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
     }
 }
