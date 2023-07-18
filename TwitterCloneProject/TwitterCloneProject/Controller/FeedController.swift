@@ -10,7 +10,7 @@ import SDWebImage
 
 // UICollectionViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource
 class FeedController: UICollectionViewController {
-
+    
     // MARK: - Properties
     var user: User? {
         didSet {
@@ -19,7 +19,7 @@ class FeedController: UICollectionViewController {
     }
     
     let tweetCellIdentifier = "TweetCell"
-
+    
     var tweets: [Tweet] = [] {
         didSet { collectionView.reloadData() }
     }
@@ -33,27 +33,54 @@ class FeedController: UICollectionViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
+        
         navigationController?.navigationBar.barStyle = .default
         navigationController?.navigationBar.isHidden = false
     }
     
+    // MARK: - Selectors
+    @objc func handleRefresh() {
+        fetchSingleEventTweet()
+        
+    }
+    
     // MARK: - API
+    func fetchSingleEventTweet() {
+        collectionView.refreshControl?.beginRefreshing()
+        TweetService.shared.refreshFetchTweets { tweets in
+            self.tweets = tweets.sorted(by: { $0.timestamp ?? Date() > $1.timestamp ?? Date() })
+            self.checkIfUserLikedTweets(self.tweets)
+            self.collectionView.refreshControl?.endRefreshing()
+
+        }
+        
+    }
+    
     func fetchTweets() {
+                collectionView.refreshControl?.beginRefreshing()
         TweetService.shared.fetchTweets { tweets in
-            self.tweets = tweets
-            self.checkIfUserLikedTweets(tweets)
+            self.tweets = tweets.sorted(by: { $0.timestamp ?? Date() > $1.timestamp ?? Date() })
+            self.checkIfUserLikedTweets(self.tweets)
+                        self.collectionView.refreshControl?.endRefreshing()
         }
     }
     
     func checkIfUserLikedTweets(_ tweets: [Tweet]) {
-        for (index, tweet) in tweets.enumerated() {
+        self.tweets.forEach { tweet in
             TweetService.shared.checkIfUserLikedTweet(tweet) { didLike in
                 guard didLike == true else { return }
-                
-                self.tweets[index].didLike = true
+                if let index = self.tweets.firstIndex(where: { $0.tweetID == tweet.tweetID }) {
+                    self.tweets[index].didLike = true
+                }
             }
         }
+        //        for (index, tweet) in tweets.enumerated() {
+        //            TweetService.shared.checkIfUserLikedTweet(tweet) { didLike in
+        //                guard didLike == true else { return }
+        //
+        //                self.tweets[index].didLike = true
+        //            }
+        //        }
     }
     
     // MARK: - Helpers
@@ -67,6 +94,9 @@ class FeedController: UICollectionViewController {
         imageView.setDimensions(width: 44, height: 44)
         navigationItem.titleView = imageView
         
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
+        collectionView.refreshControl = refreshControl
     }
     
     func configureLeftBarButton() {
@@ -80,6 +110,6 @@ class FeedController: UICollectionViewController {
         profileImageView.sd_setImage(with: user.profileImageUrl)
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: profileImageView)
-
+        
     }
 }
