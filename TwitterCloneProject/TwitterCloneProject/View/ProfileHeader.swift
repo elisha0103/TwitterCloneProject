@@ -109,13 +109,6 @@ class ProfileHeader: UICollectionReusableView {
     
     private let filterBar = ProfileFilterView()
     
-    let underlineView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .twitterBlue
-        
-        return view
-    }()
-    
     // MARK: - Lifecycle
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -154,9 +147,6 @@ class ProfileHeader: UICollectionReusableView {
         addSubview(filterBar)
         filterBar.anchor(left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, height: 50)
         
-        addSubview(underlineView)
-        let numberOfCells = CGFloat(ProfileFilterOptions.allCases.count)
-        underlineView.anchor(left: leftAnchor, bottom: bottomAnchor, width: frame.width / numberOfCells, height: 2)
     }
     
     required init?(coder: NSCoder) {
