@@ -36,7 +36,7 @@ extension ProfileFilterView: UICollectionViewDelegate {
             self.underlineView.frame.origin.x = xPosition
         }
         
-        delegate?.filterView(self, didSelect: indexPath)
+        delegate?.filterView(self, didSelect: indexPath.row)
     }
 }
 

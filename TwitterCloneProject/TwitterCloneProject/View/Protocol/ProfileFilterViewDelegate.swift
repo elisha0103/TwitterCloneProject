@@ -8,12 +8,12 @@
 import Foundation
 
 protocol ProfileFilterViewDelegate: AnyObject {
-    func filterView(_ view: ProfileFilterView, didSelect: IndexPath)
+    func filterView(_ view: ProfileFilterView, didSelect index: Int)
 }
 
 /*
  계층구조
- ProfileHeader - ProfileFilterView(collectionView) - ProfileFilterCell
+ ProfileController - ProfileHeader - ProfileFilterView(collectionView) - ProfileFilterCell
  
  ProfileFilterView에 delegate: ProfileFilterViewDelegate 선언
  
@@ -22,6 +22,17 @@ protocol ProfileFilterViewDelegate: AnyObject {
  
  ProfileHeader에서 filterBar(ProfileFilterView).delegate = self을 함으로써 대리인을 ProfileHeader 클래스로 할당
  
- 대리인이 ProfileHeader이기 때문에 함수 정의를 해줌 -> 전달된 collectionView의 didSelect에 따라 xPosition을 설정하고
- underline: UIView의 xPosition을 변경하는 코드 작성 -> Animate 적용
+ 대리인이 ProfileHeader이기 때문에 함수 정의 해줌 -> 함수에서 ProfileHeader의 delegate 호출
+ 
+ ProfileHeader의 delegate의 대리인은 ProfileController 이다.
+ ProfileHeader에서 정의한 filterView(_ view: ProfileFilterView, didSelect index: Int) 함수 내에
+ delegate.didSelect(filter: ProfileFilterOptions) 함수를 호출
+ 
+ ProfileController에서 didSelect(filter: ProfileFilterOptions) 함수를 정의해 줌
+ 
+ ProfileFilterView의 delegate는 ProfileHeaderView
+ ProfileHeaderView의 delegate는 ProfilController
+ 
+ ProfileHeader에서 delegate 함수(filterView 함수)를 정의하고 함수 내에 본인의 delegate 함수(didSelect 함수)를 호출
+ ProfileController에서 delegate 함수(didSelect)를 정의하여 ProfileFilterView에서 2계층 ProfileController까지 연결되도록 함
  */
