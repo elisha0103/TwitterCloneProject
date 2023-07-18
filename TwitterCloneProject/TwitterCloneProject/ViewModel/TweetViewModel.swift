@@ -8,6 +8,8 @@
 import UIKit
 
 struct TweetViewModel {
+    
+    // MARK: - Properties
     let tweet: Tweet
     let user: User
     
@@ -60,6 +62,18 @@ struct TweetViewModel {
         let imageName = tweet.didLike ? "like_filled" : "like"
         return UIImage(named: imageName)
     }
+    
+    var shouldHideReplyLabel: Bool {
+        return !tweet.isReply
+    }
+    
+    var replyText: String? {
+        guard let replyingToUserName = tweet.replyingTo else { return nil }
+        return "→ replying to \(replyingToUserName)"
+
+    }
+    
+    // MARK: - Lifecycle
 
     init(tweet: Tweet) {
         self.tweet = tweet
@@ -74,6 +88,7 @@ struct TweetViewModel {
         return attributedTitle
     }
     
+    // MARK: - Helpers
     // Dynamic content size(about height)
     func size(forWidth width: CGFloat) -> CGSize {
         let measurementLabel = UILabel()    // 임시 UILabel 생성하여 보이지는 않지만 해당 UILabel을 바탕으로 사이즈 구하기

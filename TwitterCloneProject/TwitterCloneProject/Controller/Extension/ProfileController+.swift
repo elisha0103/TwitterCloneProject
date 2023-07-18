@@ -10,14 +10,14 @@ import UIKit
 // MARK: UICollectionViewDataSource
 extension ProfileController {
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return tweets.count
+        return currentDataSource.count
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: tweetCellIdentifier, for: indexPath) as? TweetCell
         
         guard let cell = cell else { fatalError("cell Error") }
-        cell.tweet = tweets[indexPath.row]
+        cell.tweet = currentDataSource[indexPath.row]
         
         return cell
     }
@@ -35,6 +35,12 @@ extension ProfileController {
         
         return header
     }
+    
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let tweet = currentDataSource[indexPath.row]
+        let controller = TweetController(tweet: tweet, user: tweet.user)
+        navigationController?.pushViewController(controller, animated: true)
+    }
 
 }
 
@@ -47,7 +53,15 @@ extension ProfileController: UICollectionViewDelegateFlowLayout {
     
     // Cell
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: view.frame.width, height: 120)
+        
+        // 동적 사이즈: Cell 높이
+        let viewModel = TweetViewModel(tweet: currentDataSource[indexPath.row])
+        var height = viewModel.size(forWidth: view.frame.width).height + 72
+        
+        if currentDataSource[indexPath.row].isReply {
+            height += 20
+        }
+        return CGSize(width: view.frame.width, height: height)
     }
 }
 
@@ -80,5 +94,9 @@ extension ProfileController: ProfileHeaderDelegate {
                 NotificationService.shared.uploadNotification(type: .follow, user: self.user)
             }
         }
+    }
+    
+    func didSelect(filter: ProfileFilterOptions) {
+        self.selectedFilter = filter
     }
 }

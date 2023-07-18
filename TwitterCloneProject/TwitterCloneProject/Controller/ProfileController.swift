@@ -7,15 +7,23 @@
 
 import UIKit
 
-
-
 class ProfileController: UICollectionViewController {
     // MARK: - Properties
     var user: User
     
-    var tweets: [Tweet] = [] {
-        didSet {
-            collectionView.reloadData()
+    var selectedFilter: ProfileFilterOptions = .tweets {
+        didSet { collectionView.reloadData() }
+    }
+    
+    var tweets: [Tweet] = []
+    var likedTweets: [Tweet] = []
+    var replies: [Tweet] = []
+    
+    var currentDataSource: [Tweet] { // 필터에 의해 선택된 트윗 데이터의 버킷
+        switch selectedFilter {
+        case .tweets: return tweets
+        case .replies: return replies
+        case .likes: return likedTweets
         }
     }
     
@@ -36,6 +44,8 @@ class ProfileController: UICollectionViewController {
         super.viewDidLoad()
         configureCollectionView()
         fetchTweets()
+        fetchLikedTweets()
+        fetchReplies()
         checkIfUserIsFollowed()
         fetchUserStats()
     }
@@ -53,6 +63,13 @@ class ProfileController: UICollectionViewController {
     func fetchTweets() {
         TweetService.shared.fetchTweets(forUser: user) { tweets in
             self.tweets = tweets
+            self.collectionView.reloadData()
+        }
+    }
+    
+    func fetchLikedTweets() {
+        TweetService.shared.fetchLikes(forUser: user) { tweets in
+            self.likedTweets = tweets
         }
     }
     
@@ -69,6 +86,12 @@ class ProfileController: UICollectionViewController {
             self.collectionView.reloadData()
         }
     }
+    
+    func fetchReplies() {
+        TweetService.shared.fetchReplies(forUser: user) { tweets in
+            self.replies = tweets
+        }
+    }
 
     // MARK: - Helpers
     func configureCollectionView() {
@@ -77,5 +100,9 @@ class ProfileController: UICollectionViewController {
         
         collectionView.register(TweetCell.self, forCellWithReuseIdentifier: tweetCellIdentifier)
         collectionView.register(ProfileHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerIdentifier)
+        
+        // collectionView의 Cell 크기가 tabBar에 가려지지 않도록 높이 설정
+        guard let tabHeight = tabBarController?.tabBar.frame.height else { return }
+        collectionView.contentInset.bottom = tabHeight
     }
 }

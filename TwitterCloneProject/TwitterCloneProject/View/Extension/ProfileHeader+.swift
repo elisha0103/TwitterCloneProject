@@ -8,13 +8,8 @@
 import UIKit
 
 extension ProfileHeader: ProfileFilterViewDelegate {
-    func filterView(_ view: ProfileFilterView, didSelect: IndexPath) {
-        guard let cell = view.collectionView.cellForItem(at: didSelect) as? ProfileFilterCell else { return }
-        
-        let xPosition = cell.frame.origin.x
-        
-        UIView.animate(withDuration: 0.3) {
-            self.underlineView.frame.origin.x = xPosition
-        }
+    func filterView(_ view: ProfileFilterView, didSelect index: Int) {
+        guard let filter = ProfileFilterOptions(rawValue: index) else { return }
+        delegate?.didSelect(filter: filter)
     }
 }
