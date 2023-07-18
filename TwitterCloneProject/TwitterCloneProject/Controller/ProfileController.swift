@@ -44,6 +44,7 @@ class ProfileController: UICollectionViewController {
         super.viewDidLoad()
         configureCollectionView()
         fetchTweets()
+        fetchLikedTweets()
         checkIfUserIsFollowed()
         fetchUserStats()
     }
@@ -62,6 +63,12 @@ class ProfileController: UICollectionViewController {
         TweetService.shared.fetchTweets(forUser: user) { tweets in
             self.tweets = tweets
             self.collectionView.reloadData()
+        }
+    }
+    
+    func fetchLikedTweets() {
+        TweetService.shared.fetchLikes(forUser: user) { tweets in
+            self.likedTweets = tweets
         }
     }
     
@@ -86,5 +93,9 @@ class ProfileController: UICollectionViewController {
         
         collectionView.register(TweetCell.self, forCellWithReuseIdentifier: tweetCellIdentifier)
         collectionView.register(ProfileHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerIdentifier)
+        
+        // collectionView의 Cell 크기가 tabBar에 가려지지 않도록 높이 설정
+        guard let tabHeight = tabBarController?.tabBar.frame.height else { return }
+        collectionView.contentInset.bottom = tabHeight
     }
 }
