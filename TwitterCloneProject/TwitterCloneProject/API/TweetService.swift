@@ -96,8 +96,8 @@ struct TweetService {
                 guard let uid = dictionary["uid"] as? String else { return }
                 
                 UserService.shared.fetchUser(uid: uid) { user in
-                    let tweet = Tweet(tweetID: replyKey, user: user, dictionary: dictionary)
-                    replies.append(tweet)
+                    let reply = Tweet(tweetID: replyKey, user: user, dictionary: dictionary)
+                    replies.append(reply)
                     completion(replies)
                 }
             }

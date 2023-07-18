@@ -35,6 +35,12 @@ extension ProfileController {
         
         return header
     }
+    
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let tweet = currentDataSource[indexPath.row]
+        let controller = TweetController(tweet: tweet, user: tweet.user)
+        navigationController?.pushViewController(controller, animated: true)
+    }
 
 }
 
@@ -50,9 +56,12 @@ extension ProfileController: UICollectionViewDelegateFlowLayout {
         
         // 동적 사이즈: Cell 높이
         let viewModel = TweetViewModel(tweet: currentDataSource[indexPath.row])
-        let height = viewModel.size(forWidth: view.frame.width).height
+        var height = viewModel.size(forWidth: view.frame.width).height + 72
         
-        return CGSize(width: view.frame.width, height: height + 72)
+        if currentDataSource[indexPath.row].isReply {
+            height += 20
+        }
+        return CGSize(width: view.frame.width, height: height)
     }
 }
 

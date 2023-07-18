@@ -34,11 +34,18 @@ class TweetCell: UICollectionViewCell {
         return imageView
     }()
     
+    private let replyLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .lightGray
+        label.font = UIFont.systemFont(ofSize: 12)
+        
+        return label
+    }()
+    
     private let captionLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 14)
         label.numberOfLines = 0 // default value is 1 (single line). A value of 0 means no limit
-        label.text = "captionLabel test"
         
         return label
     }()
@@ -90,10 +97,15 @@ class TweetCell: UICollectionViewCell {
         super.init(frame: frame)
         backgroundColor = .systemBackground
         
-        let stack = UIStackView(arrangedSubviews: [infoLabel, captionLabel])
-        stack.axis = .vertical
-        stack.distribution = .fillProportionally
-        stack.spacing = 4
+        let captionStack = UIStackView(arrangedSubviews: [infoLabel, captionLabel])
+        captionStack.axis = .vertical
+        captionStack.distribution = .fillProportionally
+        captionStack.spacing = 4
+        
+        let imageCaptionStack = UIStackView(arrangedSubviews: [profileImageView, captionStack])
+        imageCaptionStack.distribution = .fillProportionally
+        imageCaptionStack.spacing = 12
+        imageCaptionStack.alignment = .leading
         
         let actionStack = UIStackView(arrangedSubviews: [commentButton, retweetButton, likeButton, shareButton])
         actionStack.axis = .horizontal
@@ -102,22 +114,23 @@ class TweetCell: UICollectionViewCell {
         let underlineView = UIView()
         underlineView.backgroundColor = .systemGroupedBackground
         
-        addSubview(profileImageView)
-        addSubview(stack)
+        let stack = UIStackView(arrangedSubviews: [replyLabel, imageCaptionStack])
+        stack.axis = .vertical
+        stack.spacing = 8
+        stack.distribution = .fillProportionally
+        
         addSubview(actionStack)
         addSubview(underlineView)
-        
-        profileImageView.anchor(top: topAnchor, left: leftAnchor, paddingTop: 8, paddingLeft: 8)
-        
-        stack.anchor(top: profileImageView.topAnchor, left: profileImageView.rightAnchor, right: rightAnchor, paddingLeft: 12, paddingRight: 12)
-        
+        addSubview(stack)
+                        
         infoLabel.font = UIFont.systemFont(ofSize: 14)
-        infoLabel.text = "infoLabel"
         
         actionStack.centerX(inView: self)
         actionStack.anchor(bottom: bottomAnchor, paddingBottom: 8)
         
         underlineView.anchor(left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, height: 1)
+        stack.anchor(top: topAnchor, left: leftAnchor, right: rightAnchor, paddingTop: 4, paddingLeft: 12, paddingRight: 12)
+        
     }
     
     required init?(coder: NSCoder) {
@@ -129,13 +142,13 @@ class TweetCell: UICollectionViewCell {
         /*
          아래 코드를 못 쓰는 이유: UICollectionViewCell은 UIViewController를 가지고 있지 않기 때문에
          cell에서 navigation와 같은 controller 기능을 사용할 수 없다.
-        let controller = ProfileController(collectionViewLayout: UICollectionViewFlowLayout())
-        navigationController.pushViewController(controller, animated: true)
+         let controller = ProfileController(collectionViewLayout: UICollectionViewFlowLayout())
+         navigationController.pushViewController(controller, animated: true)
          */
         // delegate는 FeedController이며, FeedController에 정의되어 있는 handleProfileImageTapped를 실행하였고
         // 매개변수로 해당 셀을 넘겨주는 형식이다. Cell과 Controller를 연결해주는 Delegate 패턴
         delegate?.handleProfileImageTapped(self)
-
+        
     }
     
     @objc func handleCommentTapped() {
@@ -167,5 +180,8 @@ class TweetCell: UICollectionViewCell {
         
         guard let likeButtonImage: UIImage = viewModel.likeButtonImage else { return }
         likeButton.setImage(likeButtonImage, for: .normal)
+        
+        replyLabel.isHidden = viewModel.shouldHideReplyLabel
+        replyLabel.text = viewModel.replyText
     }
 }
