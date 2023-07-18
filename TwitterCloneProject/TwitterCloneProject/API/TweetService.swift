@@ -15,7 +15,7 @@ struct TweetService {
     func uploadTweet(caption: String, type: UploadTweetConfiguration, completion: @escaping(DatabaseCompletion)) {
         guard let uid = Auth.auth().currentUser?.uid else { return }
         
-        let values = ["uid": uid,
+        var values = ["uid": uid,
                       "timestamp": Date().timeIntervalSince1970,
                       "likes": 0,
                       "retweets": 0,
@@ -30,6 +30,7 @@ struct TweetService {
             }
             
         case .reply(let tweet):
+            values["replyingTo"] = tweet.user.userName
             REF_TWEET_REPLIES.child(tweet.tweetID).childByAutoId()
                 .updateChildValues(values) { err, ref in
                     guard let replyKey = ref.key else { return }
