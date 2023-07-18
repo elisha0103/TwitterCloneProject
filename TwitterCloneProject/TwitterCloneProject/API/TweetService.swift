@@ -39,22 +39,56 @@ struct TweetService {
         }
     }
     
+    // refreshHandler fetch Tweets
+    func refreshFetchTweets(completion: @escaping([Tweet]) -> Void) {
+        print("DEBUG: REFRESH FETCH")
+        guard let currentuid = Auth.auth().currentUser?.uid else { return }
+        REF_USER_FOLLOWING.child(currentuid).removeAllObservers()
+        self.fetchTweets(completion: completion)
+    }
+    
     // 모든 트윗 fetch
     func fetchTweets(completion: @escaping([Tweet]) -> Void) {
+        print("DEBUG: TweetService fetchTweets")
+        let random: String = Date().description
         var tweets: [Tweet] = []
+        guard let currentuid = Auth.auth().currentUser?.uid else { return }
         
-        REF_TWEETS.observe(.childAdded) { snapshot,_  in
-            guard let dictionary = snapshot.value as? [String: Any] else { return }
-            guard let uid = dictionary["uid"] as? String else { return }
-            let tweetID = snapshot.key
+        // following 한 사람들 목록
+        REF_USER_FOLLOWING.child(currentuid).observe(.childAdded) { snapshot in
+            let followinguid = snapshot.key
             
-            UserService.shared.fetchUser(uid: uid) { user in
-                let tweet = Tweet(tweetID: tweetID, user: user, dictionary: dictionary)
+            // following 한 사람들의 tweet 목록
+            REF_USER_TWEETS.child(followinguid).observe(.childAdded) { snapshot in
+                let tweetID = snapshot.key
+                self.fetchTweet(withTweetID: tweetID) { tweet in
+                    tweets.append(tweet)
+                    print("DEBUG: TweetService fetchTweets: \(random.description)")
+                    print("DEBUG: TweetService tweets: \(tweets.count)")
+                    completion(tweets)
+                }
+            }
+        }
+        
+        REF_USER_TWEETS.child(currentuid).observe(.childAdded) { snapshot in
+            let tweetID = snapshot.key
+            self.fetchTweet(withTweetID: tweetID) { tweet in
                 tweets.append(tweet)
                 completion(tweets)
             }
         }
+        
+        REF_USER_FOLLOWING.child(currentuid).observe(.childRemoved) { snapshot in
+            let followinguid = snapshot.key
+            
+            if let index = tweets.firstIndex(where: { $0.user.uid == followinguid }) {
+                tweets.remove(at: index)
+                completion(tweets)
+            }
+        }
+        
     }
+    
     
     // 한 개의 트윗 fetch
     func fetchTweet(withTweetID tweetID: String, completion: @escaping(Tweet) -> Void) {
