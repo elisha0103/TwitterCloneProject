@@ -46,5 +46,9 @@ class InputTextView: UITextView, UITextViewDelegate {
         
     }
     
+    func textViewDidEndEditing(_ textView: UITextView) {
+        
+    }
+    
     
 }

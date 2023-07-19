@@ -7,12 +7,14 @@
 
 import UIKit
 
-class EditProfileCell: UITableViewCell {
+class EditProfileCell: UITableViewCell, UITextViewDelegate {
     
     // MARK: - Properties
     var viewModel: EditProfileViewModel? {
         didSet { configure() }
     }
+    
+    weak var delegate: EditProfileCellDelegate?
     
     let titleLabel: UILabel = {
         let label = UILabel()
@@ -55,6 +57,8 @@ class EditProfileCell: UITableViewCell {
         
         contentView.addSubview(bioTextView)
         bioTextView.anchor(top: topAnchor,left: titleLabel.rightAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 4, paddingLeft: 16, paddingRight: 8)
+        
+        bioTextView.delegate = self
     }
     
     required init?(coder: NSCoder) {
@@ -65,7 +69,7 @@ class EditProfileCell: UITableViewCell {
     
     // MARK: - Selectors
     @objc func handleUpdateUserInfo() {
-        
+        delegate?.updateUserInfo(self)
     }
     
     // MARK: - Helpers
@@ -77,5 +81,9 @@ class EditProfileCell: UITableViewCell {
         titleLabel.text = viewModel.titleText
         infoTextField.text = viewModel.optionValue
         bioTextView.text = viewModel.optionValue
+    }
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        handleUpdateUserInfo()
     }
 }

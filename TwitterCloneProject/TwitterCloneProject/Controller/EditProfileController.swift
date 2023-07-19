@@ -10,8 +10,12 @@ import UIKit
 class EditProfileController: UITableViewController {
 
     // MARK: - Properties
-    let user: User
+    var user: User
     private lazy var headerView = EditProfileHeader(user: user)
+    let imagePicker = UIImagePickerController()
+    var selectedImage: UIImage? {
+        didSet { headerView.profileImageView.image = selectedImage }
+    }
     
     let reuseableIdentifier: String = "EditProfileTableViewCell"
     
@@ -30,14 +34,9 @@ class EditProfileController: UITableViewController {
         
         configureNavigationBar()
         configureTableView()
+        configureImagePicker()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        navigationController?.navigationBar.barStyle = .default
-        navigationController?.navigationBar.isHidden = false
-
-    }
-
     // MARK: - API
     
     // MARK: - Selectors
@@ -51,10 +50,21 @@ class EditProfileController: UITableViewController {
         
     // MARK: - Helpers
     func configureNavigationBar() {
-        navigationController?.navigationBar.barTintColor = .twitterBlue
+//        let appearance = UINavigationBarAppearance()
+//                appearance.configureWithOpaqueBackground()
+//                appearance.backgroundColor = .twitterBlue
+//
+//        appearance.titleTextAttributes = [.foregroundColor: UIColor.white]
+//        self.navigationController?.navigationBar.standardAppearance = appearance
+//        self.navigationController?.navigationBar.scrollEdgeAppearance = appearance
+//        self.navigationController?.navigationBar.barStyle = .black
+
+        navigationController?.navigationBar.isHidden = false
+        navigationController?.navigationBar.barStyle = .black
+                navigationController?.navigationBar.isTranslucent = false
+        navigationController?.navigationBar.backgroundColor = .twitterBlue
         navigationController?.navigationBar.tintColor = .white
-        navigationController?.navigationBar.isTranslucent = false
-        
+                
         navigationItem.title = "Edit Profile"
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(handleCancel))
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(handleDone))
@@ -71,4 +81,8 @@ class EditProfileController: UITableViewController {
         
     }
 
+    func configureImagePicker() {
+        imagePicker.delegate = self
+        imagePicker.allowsEditing = true
+    }
 }

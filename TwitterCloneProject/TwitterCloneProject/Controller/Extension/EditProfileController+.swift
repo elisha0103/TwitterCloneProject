@@ -22,6 +22,7 @@ extension EditProfileController {
         
         guard let option = EditProfileOptions(rawValue: indexPath.row) else { return cell }
         cell.viewModel = EditProfileViewModel(user: user, option: option)
+        cell.delegate = self
         
         return cell
     }
@@ -39,6 +40,42 @@ extension EditProfileController {
 // MARK: - EditProfileHeaderDelegate
 extension EditProfileController: EditProfileHeaderDelegate {
     func didTapChangeProfilePhoto() {
-        print("DEBUG: Handle Change Photo...")
+        present(imagePicker, animated: true)
+    }
+}
+
+extension EditProfileController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        guard let image = info[.editedImage] as? UIImage else { return }
+        self.selectedImage = image
+        
+        dismiss(animated: true)
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        dismiss(animated: true)
+    }
+}
+
+extension EditProfileController: EditProfileCellDelegate {
+    func updateUserInfo(_ cell: EditProfileCell) {
+        guard let viewModel = cell.viewModel else { return }
+        
+        switch viewModel.option {
+            
+        case .fullName:
+            guard let fullName = cell.infoTextField.text else { return }
+            user.fullName = fullName
+        case .userName:
+            guard let userName = cell.infoTextField.text else { return }
+            user.userName = userName
+        case .bio:
+            user.bio = cell.bioTextView.text
+        }
+        
+        print("DEBUG: fullName is \(user.fullName)")
+        print("DEBUG: userName is \(user.userName)")
+        print("DEBUG: Bio is \(user.bio)")
     }
 }

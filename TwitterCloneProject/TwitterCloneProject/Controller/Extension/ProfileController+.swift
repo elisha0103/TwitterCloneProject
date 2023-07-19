@@ -76,8 +76,7 @@ extension ProfileController: ProfileHeaderDelegate {
         if user.isCurrentUser {
             let controller = EditProfileController(user: user)
             let navigation = UINavigationController(rootViewController: controller)
-            navigation.modalPresentationStyle = .fullScreen
-            navigation.navigationBar.barStyle = .default
+            navigation.modalPresentationStyle = .formSheet
             present(navigation, animated: true)
             
             return
