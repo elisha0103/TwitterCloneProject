@@ -8,7 +8,7 @@
 import UIKit
 
 
-class UploadTweetController: UIViewController {
+class UploadTweetController: UIViewController, UITextViewDelegate {
     // MARK: - Properties
     private let user: User
     private let config: UploadTweetConfiguration // Tweet 등록, Reply 등록 ViewController 선택할 플래그 변수
@@ -48,7 +48,7 @@ class UploadTweetController: UIViewController {
         return label
     }()
     
-    private let captionTextView = CaptionTextView()
+    private let captionTextView = InputTextView()
     
     // MARK: - Lifecycle
     init(user: User, config: UploadTweetConfiguration) {
@@ -56,6 +56,8 @@ class UploadTweetController: UIViewController {
         self.config = config
         
         super.init(nibName: nil, bundle: nil)
+        self.captionTextView.delegate = self
+
     }
     
     required init?(coder: NSCoder) {
@@ -130,6 +132,11 @@ class UploadTweetController: UIViewController {
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(handleCancel))
         navigationController?.navigationBar.isTranslucent = true
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: actionButton)
+    }
+
+    // MARK: - Helpers
+    func textViewDidChange(_ textView: UITextView) {
+        captionTextView.placeholderLabel.isHidden = !captionTextView.text.isEmpty
     }
 
 
