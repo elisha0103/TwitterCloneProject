@@ -7,12 +7,19 @@
 
 import UIKit
 
+protocol EditProfileControllerDelegate: AnyObject {
+    func controller(_ controller: EditProfileController, wantsToUpdate user: User)
+}
+
 class EditProfileController: UITableViewController {
 
     // MARK: - Properties
     var user: User
     private lazy var headerView = EditProfileHeader(user: user)
     let imagePicker = UIImagePickerController()
+    weak var delegate: EditProfileControllerDelegate?
+    
+    var isUserInfoChanged = false
     var selectedImage: UIImage? {
         didSet { headerView.profileImageView.image = selectedImage }
     }
@@ -38,6 +45,13 @@ class EditProfileController: UITableViewController {
     }
     
     // MARK: - API
+    func updateUserData() {
+        UserService.shared.saveUserData(user: user) { err, ref in
+            print("DEBUG: Did update user info..")
+            
+            self.delegate?.controller(self, wantsToUpdate: self.user)
+        }
+    }
     
     // MARK: - Selectors
     @objc func handleCancel() {
@@ -45,7 +59,7 @@ class EditProfileController: UITableViewController {
     }
     
     @objc func handleDone() {
-        dismiss(animated: true)
+        updateUserData()
     }
         
     // MARK: - Helpers

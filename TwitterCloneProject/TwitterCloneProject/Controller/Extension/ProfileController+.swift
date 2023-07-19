@@ -75,6 +75,7 @@ extension ProfileController: ProfileHeaderDelegate {
         
         if user.isCurrentUser {
             let controller = EditProfileController(user: user)
+            controller.delegate = self
             let navigation = UINavigationController(rootViewController: controller)
             navigation.modalPresentationStyle = .formSheet
             present(navigation, animated: true)
@@ -102,5 +103,14 @@ extension ProfileController: ProfileHeaderDelegate {
     
     func didSelect(filter: ProfileFilterOptions) {
         self.selectedFilter = filter
+    }
+}
+
+// MARK: - EditProfileControllerDelegate
+extension ProfileController: EditProfileControllerDelegate {
+    func controller(_ controller: EditProfileController, wantsToUpdate user: User) {
+        controller.dismiss(animated: true)
+        self.user = user
+        self.collectionView.reloadData()
     }
 }

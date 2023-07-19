@@ -29,6 +29,7 @@ extension EditProfileController {
 
 }
 
+// MARK: - UITableviewDelegate
 extension EditProfileController {
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         guard let option = EditProfileOptions(rawValue: indexPath.row) else { return 0 }
@@ -44,6 +45,7 @@ extension EditProfileController: EditProfileHeaderDelegate {
     }
 }
 
+// MARK:  - UIImagePicker
 extension EditProfileController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         
@@ -58,9 +60,12 @@ extension EditProfileController: UIImagePickerControllerDelegate, UINavigationCo
     }
 }
 
+// MARK: - EditProfileCellDelegate
 extension EditProfileController: EditProfileCellDelegate {
     func updateUserInfo(_ cell: EditProfileCell) {
         guard let viewModel = cell.viewModel else { return }
+        isUserInfoChanged = true
+        navigationItem.rightBarButtonItem?.isEnabled = true
         
         switch viewModel.option {
             
@@ -74,8 +79,5 @@ extension EditProfileController: EditProfileCellDelegate {
             user.bio = cell.bioTextView.text
         }
         
-        print("DEBUG: fullName is \(user.fullName)")
-        print("DEBUG: userName is \(user.userName)")
-        print("DEBUG: Bio is \(user.bio)")
     }
 }
