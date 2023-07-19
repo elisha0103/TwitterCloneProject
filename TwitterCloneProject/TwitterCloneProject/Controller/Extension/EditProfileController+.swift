@@ -65,7 +65,6 @@ extension EditProfileController: EditProfileCellDelegate {
     func updateUserInfo(_ cell: EditProfileCell) {
         guard let viewModel = cell.viewModel else { return }
         isUserInfoChanged = true
-        navigationItem.rightBarButtonItem?.isEnabled = true
         
         switch viewModel.option {
             

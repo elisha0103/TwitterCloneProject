@@ -31,24 +31,16 @@ class InputTextView: UITextView, UITextViewDelegate {
         addSubview(placeholderLabel)
         placeholderLabel.anchor(top: topAnchor, left: leftAnchor, paddingTop: 8, paddingLeft: 4)
         
-        delegate = self
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    // MARK: - Selectors
-    
+        
     // MARK: - Helpers
     func textViewDidChange(_ textView: UITextView) {
         placeholderLabel.isHidden = !text.isEmpty
         
     }
-    
-    func textViewDidEndEditing(_ textView: UITextView) {
-        
-    }
-    
     
 }
