@@ -53,14 +53,14 @@ class UserCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         backgroundColor = .systemBackground
         
-        addSubview(profileImageView)
+        contentView.addSubview(profileImageView)
         profileImageView.centerY(inView: self, leftAnchor: leftAnchor, paddingLeft: 12)
         
         let stack = UIStackView(arrangedSubviews: [userNameLabel, fullNameLabel])
         stack.axis = .vertical
         stack.spacing = 2
         
-        addSubview(stack)
+        contentView.addSubview(stack)
         stack.centerY(inView: profileImageView, leftAnchor: profileImageView.rightAnchor, paddingLeft: 12)
     }
     
