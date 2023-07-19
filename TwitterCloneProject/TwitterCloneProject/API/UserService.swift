@@ -77,7 +77,7 @@ struct UserService {
         
         let values = ["fullName": user.fullName,
                       "userName": user.userName,
-                      "bio": user.bio ?? ""]
+                      "bio": user.bio ]
         
         REF_USERS.child(uid).updateChildValues(values, withCompletionBlock: completion)
     }
@@ -97,5 +97,14 @@ struct UserService {
                 }
             }
         }
+    }
+    
+    func deleteProfileImage(profileUrl url: URL?, completion: ((Error?) -> Void)?) {
+        guard let imageFileName = url?.lastPathComponent else { return }
+        print("DEBUG: IMAGEFILENAME: \(imageFileName)")
+        let ref = STORAGE_PROFILE_IMAGES.child(imageFileName)
+        
+        ref.delete(completion: completion)
+        
     }
 }

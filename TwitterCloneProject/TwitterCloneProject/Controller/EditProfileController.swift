@@ -74,8 +74,13 @@ class EditProfileController: UITableViewController {
         guard let image = selectedImage else { return }
         
         UserService.shared.updateProfileImage(image: image) { profileImageUrl in
-            self.user.profileImageUrl = profileImageUrl
-            self.delegate?.controller(self, wantsToUpdate: self.user)
+            UserService.shared.deleteProfileImage(profileUrl: self.user.profileImageUrl) { error in
+                if let error {
+                    print("DEBUG: PROFILEIAMGE DELETE ERROR - \(String(describing: error.localizedDescription))")
+                }
+                self.user.profileImageUrl = profileImageUrl
+                self.delegate?.controller(self, wantsToUpdate: self.user)
+            }
         }
     }
     
