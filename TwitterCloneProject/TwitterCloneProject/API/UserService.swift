@@ -71,4 +71,40 @@ struct UserService {
             }
         }
     }
+    
+    func saveUserData(user: User, completion: @escaping(DatabaseCompletion)) {
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        
+        let values = ["fullName": user.fullName,
+                      "userName": user.userName,
+                      "bio": user.bio ]
+        
+        REF_USERS.child(uid).updateChildValues(values, withCompletionBlock: completion)
+    }
+    
+    func updateProfileImage(image: UIImage, completion: @escaping(URL?) -> Void) {
+        guard let imageData = image.jpegData(compressionQuality: 0.3) else { return }
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        let fileName = UUID().uuidString
+        let ref = STORAGE_PROFILE_IMAGES.child(fileName)
+        ref.putData(imageData) { meta, error in
+            ref.downloadURL { url, error in
+                guard let profileImageUrl = url?.absoluteString else { return }
+                let values = ["profileImageUrl": profileImageUrl]
+                
+                REF_USERS.child(uid).updateChildValues(values) { err, ref in
+                    completion(url)
+                }
+            }
+        }
+    }
+    
+    func deleteProfileImage(profileUrl url: URL?, completion: ((Error?) -> Void)?) {
+        guard let imageFileName = url?.lastPathComponent else { return }
+        print("DEBUG: IMAGEFILENAME: \(imageFileName)")
+        let ref = STORAGE_PROFILE_IMAGES.child(imageFileName)
+        
+        ref.delete(completion: completion)
+        
+    }
 }
