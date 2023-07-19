@@ -167,20 +167,6 @@
 			path = ActionSheet;
 			sourceTree = "<group>";
 		};
-		663CA8252A527CCD0075FF13 /* Extension */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Extension;
-			sourceTree = "<group>";
-		};
-		663CA82C2A528C2A0075FF13 /* Protocol */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Protocol;
-			sourceTree = "<group>";
-		};
 		66452ED52A3C56CD00656C96 = {
 			isa = PBXGroup;
 			children = (
@@ -278,8 +264,6 @@
 			children = (
 				66A66A852A679F9600850860 /* Tweet */,
 				66A66A822A679F5000850860 /* Profile */,
-				663CA82C2A528C2A0075FF13 /* Protocol */,
-				663CA8252A527CCD0075FF13 /* Extension */,
 				665F88FD2A4ABA9E00A7AD1D /* InputTextView.swift */,
 				660190492A54057600D41001 /* UserCell.swift */,
 				660B51692A65107B008E0DDB /* NotificationCell.swift */,

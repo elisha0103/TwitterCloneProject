@@ -69,7 +69,7 @@ struct TweetViewModel {
     
     var replyText: String? {
         guard let replyingToUserName = tweet.replyingTo else { return nil }
-        return "→ replying to \(replyingToUserName)"
+        return "→ replying to @\(replyingToUserName)"
 
     }
     
