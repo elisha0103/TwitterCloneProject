@@ -32,6 +32,9 @@ extension EditProfileController {
 
 }
 
-extension EditProfileController {
-    
+// MARK: - EditProfileHeaderDelegate
+extension EditProfileController: EditProfileHeaderDelegate {
+    func didTapChangeProfilePhoto() {
+        print("DEBUG: Handle Change Photo...")
+    }
 }

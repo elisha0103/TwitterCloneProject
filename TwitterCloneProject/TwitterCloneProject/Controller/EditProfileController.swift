@@ -11,6 +11,7 @@ class EditProfileController: UITableViewController {
 
     // MARK: - Properties
     let user: User
+    private lazy var headerView = EditProfileHeader(user: user)
     
     // MARK: - Lifecycle
     init(user: User) {
@@ -26,6 +27,7 @@ class EditProfileController: UITableViewController {
         super.viewDidLoad()
         
         configureNavigationBar()
+        configureTableView()
     }
 
     // MARK: - API
@@ -38,7 +40,7 @@ class EditProfileController: UITableViewController {
     @objc func handleDone() {
         dismiss(animated: true)
     }
-    
+        
     // MARK: - Helpers
     func configureNavigationBar() {
         navigationController?.navigationBar.barTintColor = .twitterBlue
@@ -50,6 +52,14 @@ class EditProfileController: UITableViewController {
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(handleCancel))
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(handleDone))
         navigationItem.rightBarButtonItem?.isEnabled = false
+    }
+    
+    func configureTableView() {
+        tableView.tableHeaderView = headerView
+        headerView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 180)
+        tableView.tableFooterView = UIView()
+        headerView.delegate = self
+        
     }
 
 }
