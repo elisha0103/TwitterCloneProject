@@ -19,7 +19,10 @@ extension EditProfileController {
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseableIdentifier, for: indexPath) as? EditProfileCell
         
         guard let cell = cell else { fatalError("EditProfile Cell Error") }
-
+        
+        guard let option = EditProfileOptions(rawValue: indexPath.row) else { return cell }
+        cell.viewModel = EditProfileViewModel(user: user, option: option)
+        
         return cell
     }
 

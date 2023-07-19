@@ -10,6 +10,10 @@ import UIKit
 class EditProfileCell: UITableViewCell {
     
     // MARK: - Properties
+    var viewModel: EditProfileViewModel? {
+        didSet { configure() }
+    }
+    
     let titleLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 14)
@@ -43,6 +47,14 @@ class EditProfileCell: UITableViewCell {
         
         selectionStyle = .none
         contentView.addSubview(titleLabel)
+        titleLabel.widthAnchor.constraint(equalToConstant: 100).isActive = true
+        titleLabel.anchor(top: topAnchor, left: leftAnchor, paddingTop: 12, paddingLeft: 16)
+        
+        contentView.addSubview(infoTextField)
+        infoTextField.anchor(top: topAnchor, left: titleLabel.rightAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 4, paddingLeft: 16, paddingRight: 8)
+        
+        contentView.addSubview(bioTextView)
+        bioTextView.anchor(top: topAnchor,left: titleLabel.rightAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 4, paddingLeft: 16, paddingRight: 8)
     }
     
     required init?(coder: NSCoder) {
@@ -57,5 +69,13 @@ class EditProfileCell: UITableViewCell {
     }
     
     // MARK: - Helpers
-    
+    func configure() {
+        guard let viewModel = viewModel else { return }
+        infoTextField.isHidden = viewModel.shouldHideTextField
+        bioTextView.isHidden = viewModel.shouldHideTextView
+        
+        titleLabel.text = viewModel.titleText
+        infoTextField.text = viewModel.optionValue
+        bioTextView.text = viewModel.optionValue
+    }
 }

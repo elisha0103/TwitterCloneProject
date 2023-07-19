@@ -31,6 +31,12 @@ class EditProfileController: UITableViewController {
         configureNavigationBar()
         configureTableView()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        navigationController?.navigationBar.barStyle = .default
+        navigationController?.navigationBar.isHidden = false
+
+    }
 
     // MARK: - API
     
@@ -46,7 +52,6 @@ class EditProfileController: UITableViewController {
     // MARK: - Helpers
     func configureNavigationBar() {
         navigationController?.navigationBar.barTintColor = .twitterBlue
-        navigationController?.navigationBar.barStyle = .black
         navigationController?.navigationBar.tintColor = .white
         navigationController?.navigationBar.isTranslucent = false
         
