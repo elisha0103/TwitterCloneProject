@@ -10,4 +10,5 @@ import Foundation
 protocol TweetHeaderDelegate: AnyObject {
     func handleInteractAction()
     func handleReportAction()
+    func handleFetchUser(withUserName userName: String)
 }
