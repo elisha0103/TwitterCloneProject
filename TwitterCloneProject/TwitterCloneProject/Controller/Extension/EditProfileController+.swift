@@ -9,27 +9,28 @@ import UIKit
 
 // MARK: - UITableViewDataSource
 extension EditProfileController {
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 0
-    }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return 0
+        
+        return EditProfileOptions.allCases.count
     }
     
-    
-    /*
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
-
-        // Configure the cell...
+        let cell = tableView.dequeueReusableCell(withIdentifier: reuseableIdentifier, for: indexPath) as? EditProfileCell
+        
+        guard let cell = cell else { fatalError("EditProfile Cell Error") }
 
         return cell
     }
-    */
 
+}
+
+extension EditProfileController {
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        guard let option = EditProfileOptions(rawValue: indexPath.row) else { return 0 }
+        
+        return option == .bio ? 100 : 48
+    }
 }
 
 // MARK: - EditProfileHeaderDelegate

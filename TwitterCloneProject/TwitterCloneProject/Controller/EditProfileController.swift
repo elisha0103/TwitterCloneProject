@@ -13,6 +13,8 @@ class EditProfileController: UITableViewController {
     let user: User
     private lazy var headerView = EditProfileHeader(user: user)
     
+    let reuseableIdentifier: String = "EditProfileTableViewCell"
+    
     // MARK: - Lifecycle
     init(user: User) {
         self.user = user
@@ -59,6 +61,8 @@ class EditProfileController: UITableViewController {
         headerView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 180)
         tableView.tableFooterView = UIView()
         headerView.delegate = self
+        
+        tableView.register(EditProfileCell.self, forCellReuseIdentifier: reuseableIdentifier)
         
     }
 
