@@ -8,7 +8,7 @@
 import UIKit
 
 // MARK: - UITableViewDelegate
-extension ExploreController {
+extension SearchController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return isSearchMode ? filterUsers.count : users.count
     }
@@ -33,7 +33,7 @@ extension ExploreController {
 }
 
 // MARK: - UISearchResultsUpdating
-extension ExploreController: UISearchResultsUpdating {
+extension SearchController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         guard let searchText = searchController.searchBar.text?.lowercased() else { return }
         // 검색 결과가 없는 경우, filterUsers 값이 변경되지 않으므로 검색 결과가 없다는 것을 나타내기 위해서 수동으로 reloadData 실행

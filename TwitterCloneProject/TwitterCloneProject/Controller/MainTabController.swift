@@ -8,9 +8,17 @@
 import UIKit
 import Firebase
 
+enum ActionButtonConfiguration {
+    case tweet
+    case message
+}
+
 class MainTabController: UITabBarController {
 
     // MARK: - Properties
+    
+    var buttonConfig: ActionButtonConfiguration = .tweet
+    
     var user: User? {
         didSet {
             /*
@@ -25,7 +33,7 @@ class MainTabController: UITabBarController {
         }
     }
     
-    private lazy var actionButton: UIButton = {
+    lazy var actionButton: UIButton = {
         let button: UIButton = UIButton(type: .system)
         button.tintColor = .white
         button.backgroundColor = .twitterBlue
@@ -69,14 +77,23 @@ class MainTabController: UITabBarController {
     // MARK: - Selectors
     @objc func actionButtonTapped() {
         guard let user = user else { return }
-        let uploadTweetController = UploadTweetController(user: user, config: .tweet)
-        let navigation = UINavigationController(rootViewController: uploadTweetController)
-        navigation.modalPresentationStyle = .fullScreen
-        present(navigation, animated: true)
+        let controller: UIViewController
+        
+        switch buttonConfig {
+        case .tweet:
+            controller = UploadTweetController(user: user, config: .tweet)
+            let navigation = UINavigationController(rootViewController: controller)
+            navigation.modalPresentationStyle = .fullScreen
+            present(navigation, animated: true)
+            
+        case .message:
+            controller = SearchController(config: .message)
+        }
     }
     
     // MARK: - Helpers
     func configureUI() {
+        self.delegate = self
     
         view.addSubview(actionButton)
         actionButton.anchor(bottom: view.safeAreaLayoutGuide.bottomAnchor, right: view.safeAreaLayoutGuide.rightAnchor, paddingBottom: 64, paddingRight: 16, width: 56, height: 56)
@@ -88,7 +105,7 @@ class MainTabController: UITabBarController {
         let feedController = FeedController(collectionViewLayout: UICollectionViewFlowLayout())
         let feedNavigation: UINavigationController = templateNavigationController(image: UIImage(named: "home_unselected"), rootViewController: feedController)
         
-        let exploreController = ExploreController()
+        let exploreController = SearchController(config: .userSearch)
         let exploreNavigation: UINavigationController = templateNavigationController(image: UIImage(named: "search_unselected"), rootViewController: exploreController)
         
         let notificationsController = NotificationsController()
