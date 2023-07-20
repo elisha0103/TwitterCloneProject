@@ -48,7 +48,7 @@ class FeedController: UICollectionViewController {
         
     }
     
-    @objc func handleProfileImageTapped() {
+    @objc func handleLeftNavigationItemTapped() {
         guard let user = user else { return }
         let controller = ProfileController(user: user)
         navigationController?.pushViewController(controller, animated: true)
@@ -117,7 +117,7 @@ class FeedController: UICollectionViewController {
         profileImageView.layer.cornerRadius = 32 / 2
         profileImageView.layer.masksToBounds = true
         
-        let tap = UITapGestureRecognizer(target: self, action: #selector(handleProfileImageTapped))
+        let tap = UITapGestureRecognizer(target: self, action: #selector(handleLeftNavigationItemTapped))
         profileImageView.addGestureRecognizer(tap)
         profileImageView.isUserInteractionEnabled = true
         
