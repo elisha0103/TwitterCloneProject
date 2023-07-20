@@ -6,12 +6,14 @@
 //
 
 import UIKit
+import Firebase
 
 class TweetController: UICollectionViewController {
 
     // MARK: - Properties
     let tweet: Tweet
     var user: User
+    var currentUser: User?
     let reuseIdentifier = "TweetCell"
     let headerIdentifier = "TweetHeader"
     var replies: [Tweet] = [] {
@@ -34,6 +36,7 @@ class TweetController: UICollectionViewController {
         configureCollectionView()
         fetchReplies()
         checkIfUserIsFollowed()
+        fetchCurrentUser()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -45,6 +48,7 @@ class TweetController: UICollectionViewController {
     // MARK: - API
     func fetchReplies() {
         TweetService.shared.fetchReplies(forTweet: tweet) { tweets in
+            self.replies = tweets.sorted(by: { $0.timestamp ?? Date() > $1.timestamp ?? Date() })
             self.replies = tweets
         }
     }
@@ -53,6 +57,13 @@ class TweetController: UICollectionViewController {
         UserService.shared.checkIfUserIsFollowed(uid: tweet.user.uid) { isFollowed in
             self.user.isFollowed = isFollowed
             self.collectionView.reloadData() // 초기 데이터에서 파베 데이터로 변경된 결과를 반영하기 위함
+        }
+    }
+    
+    func fetchCurrentUser() {
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        UserService.shared.fetchUser(uid: uid) { user in
+            self.currentUser = user
         }
     }
     

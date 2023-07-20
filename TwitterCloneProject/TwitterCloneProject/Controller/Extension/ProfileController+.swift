@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Firebase
 
 // MARK: UICollectionViewDataSource
 extension ProfileController {
@@ -18,10 +19,11 @@ extension ProfileController {
         
         guard let cell = cell else { fatalError("cell Error") }
         cell.tweet = currentDataSource[indexPath.row]
+        cell.delegate = self
         
         return cell
     }
-        
+    
 }
 
 // MARK: - UICollectionViewDelegate
@@ -41,14 +43,21 @@ extension ProfileController {
         let controller = TweetController(tweet: tweet, user: tweet.user)
         navigationController?.pushViewController(controller, animated: true)
     }
-
+    
 }
 
 // MARK: - UICollectionViewDelegateFlowLayout
 extension ProfileController: UICollectionViewDelegateFlowLayout {
     // Header
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        return CGSize(width: view.frame.width, height: 350)
+        
+        var height: CGFloat = 300
+        
+        if !user.bio.isEmpty {
+            height += 50
+        }
+        
+        return CGSize(width: view.frame.width, height: height)
     }
     
     // Cell
@@ -86,17 +95,15 @@ extension ProfileController: ProfileHeaderDelegate {
         // 본인 계정이 아닌경우
         if user.isFollowed { // Unfollow 하는 로직
             UserService.shared.unfollowUser(uid: user.uid) { error, ref in
-                print("DEBUG: Did complete follow in backend...")
                 self.user.isFollowed = false
                 self.collectionView.reloadData()
             }
         } else { // Follow 하는 로직
             UserService.shared.followUser(uid: user.uid) { error, ref in
-                print("DEBUG: Did unfollow user in backed...")
                 self.user.isFollowed = true
                 self.collectionView.reloadData()
                 
-                NotificationService.shared.uploadNotification(type: .follow, user: self.user)
+                NotificationService.shared.uploadNotification(toUser: self.user, type: .follow)
             }
         }
     }
@@ -112,5 +119,60 @@ extension ProfileController: EditProfileControllerDelegate {
         controller.dismiss(animated: true)
         self.user = user
         self.collectionView.reloadData()
+    }
+    
+    func handleLogout() {
+        do {
+            try Auth.auth().signOut()
+            let logInNavigation = UINavigationController(rootViewController: LoginController())
+            logInNavigation.modalPresentationStyle = .fullScreen
+            self.present(logInNavigation, animated: true)
+
+        } catch let error {
+            print("DEBUG: SignOut error - \(error.localizedDescription)")
+        }
+        
+    }
+}
+
+extension ProfileController: TweetCellDelegate {
+    // Navigation Controll을 셀에서 할 수 없어서 셀로부터 데이터를 상위 뷰로 받아와 상위 뷰에서 Navigation Controll을 한다.
+    func handleProfileImageTapped(_ cell: TweetCell) {
+        guard let user = cell.tweet?.user else { return }
+        
+        let controller = ProfileController(user: user)
+        navigationController?.pushViewController(controller, animated: true)
+    }
+    
+    func handleReplyTapped(_ cell: TweetCell) {
+        guard let tweet = cell.tweet else { return }
+        guard let currentUser = currentUser else { return }
+        let controller = UploadTweetController(user: currentUser, config: .reply(tweet))
+        let navigationController = UINavigationController(rootViewController: controller)
+        navigationController.modalPresentationStyle = .fullScreen
+        present(navigationController, animated: true)
+    }
+    
+    func handleLikeTapped(_ cell: TweetCell) {
+        guard let tweet = cell.tweet else { return }
+        
+        TweetService.shared.likeTweet(tweet: tweet) { err, ref in
+            cell.tweet?.didLike.toggle()
+            let likes = tweet.didLike ? tweet.likes - 1 : tweet.likes + 1
+            cell.tweet?.likes = likes
+            
+            // only upload notification if tweet6 is being liked
+            guard !tweet.didLike else { return } // didLike == true 통과
+            
+            NotificationService.shared.uploadNotification(toUser: tweet.user, type: .like, tweetID: tweet.tweetID)
+
+        }
+    }
+    
+    func handleFetchUser(withUserName userName: String) {
+        UserService.shared.fetchUser(withUserName: userName) { user in
+            let controller = ProfileController(user: user)
+            self.navigationController?.pushViewController(controller, animated: true)
+        }
     }
 }

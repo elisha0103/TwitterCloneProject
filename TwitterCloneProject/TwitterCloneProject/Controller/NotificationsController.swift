@@ -8,7 +8,7 @@
 import UIKit
 
 class NotificationsController: UITableViewController {
-
+    
     // MARK: - Properties
     var notifications: [Notification] = [] {
         didSet { tableView.reloadData() }
@@ -19,7 +19,7 @@ class NotificationsController: UITableViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         configureUI()
         fetchNotifications()
     }
@@ -36,16 +36,21 @@ class NotificationsController: UITableViewController {
         refreshControl?.beginRefreshing()
         NotificationService.shared.fetchNotifications { notifications in
             self.notifications = notifications
+            self.notifications = notifications.sorted(by: { $0.timestamp > $1.timestamp })
             self.checkIfUserIsFollowed(notifications: notifications)
             self.refreshControl?.endRefreshing()
         }
     }
     
     func checkIfUserIsFollowed(notifications: [Notification]) {
-        for (index, notification) in notifications.enumerated() {
-            if case .follow = notification.type {
-                let user = notification.user
-                UserService.shared.checkIfUserIsFollowed(uid: user.uid) { isFollowed in
+        guard !notifications.isEmpty else { return }
+        
+        notifications.forEach { notification in
+            guard case .follow = notification.type else { return }
+            let user = notification.user
+            
+            UserService.shared.checkIfUserIsFollowed(uid: user.uid) { isFollowed in
+                if let index = self.notifications.firstIndex(where: { $0.user.uid == notification.user.uid }) {
                     self.notifications[index].user.isFollowed = isFollowed
                 }
             }

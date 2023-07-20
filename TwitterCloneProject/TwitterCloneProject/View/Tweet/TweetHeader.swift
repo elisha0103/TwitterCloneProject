@@ -198,29 +198,27 @@ class TweetHeader: UICollectionReusableView {
     
     // MARK: - Selectors
     @objc func handleProfileImageTapped() {
-        print("DEBUG: Go to user profiles")
+        delegate?.handleProfileImageTapped(self)
     }
     
     @objc func showActionSheet() {
         print("DEBUG: Handle show action sheet")
-        
-        
     }
     
     @objc func handleCommentTapped() {
-        
+        delegate?.handleReplyTapped(self)
     }
     
     @objc func handleRetweetTapped() {
-        
+        print("DEBUG: Tapped Comment Button")
     }
     
     @objc func handleLikeTapped() {
-        
+        delegate?.handleLikeTapped(self)
     }
     
     @objc func handleShareTapped() {
-        
+        print("DEBUG: Tapped Share Button")
     }
     
     // MARK: - Helpers
@@ -267,7 +265,6 @@ class TweetHeader: UICollectionReusableView {
             case .delete, .follow(_), .unfollow(_):
                 // user.isCurrentUser ? true(속성 빨간색) : false(속성 없음)
                 action = UIAction(title: option.description, image: image, attributes: user.isCurrentUser ? .destructive : []) { _ in
-                    print("DEBUG: interact Action")
                     self.delegate?.handleInteractAction()
                 }
                 
@@ -295,5 +292,4 @@ class TweetHeader: UICollectionReusableView {
             self.delegate?.handleFetchUser(withUserName: userName)
         }
     }
-
 }

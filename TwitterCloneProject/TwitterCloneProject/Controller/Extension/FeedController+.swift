@@ -54,7 +54,8 @@ extension FeedController: TweetCellDelegate {
     
     func handleReplyTapped(_ cell: TweetCell) {
         guard let tweet = cell.tweet else { return }
-        let controller = UploadTweetController(user: tweet.user, config: .reply(tweet))
+        guard let user = user else { return }
+        let controller = UploadTweetController(user: user, config: .reply(tweet))
         let navigationController = UINavigationController(rootViewController: controller)
         navigationController.modalPresentationStyle = .fullScreen
         present(navigationController, animated: true)
@@ -71,7 +72,7 @@ extension FeedController: TweetCellDelegate {
             // only upload notification if tweet6 is being liked
             guard !tweet.didLike else { return } // didLike == true 통과
             
-            NotificationService.shared.uploadNotification(type: .like, tweet: tweet)
+            NotificationService.shared.uploadNotification(toUser: tweet.user, type: .like, tweetID: tweet.tweetID)
         }
     }
     

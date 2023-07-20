@@ -33,11 +33,11 @@ class FeedController: UICollectionViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-//        let appearance = UINavigationBarAppearance()
-//        appearance.configureWithOpaqueBackground()
-//        self.navigationController?.navigationBar.standardAppearance = appearance
-//        self.navigationController?.navigationBar.scrollEdgeAppearance = appearance
-
+        //        let appearance = UINavigationBarAppearance()
+        //        appearance.configureWithOpaqueBackground()
+        //        self.navigationController?.navigationBar.standardAppearance = appearance
+        //        self.navigationController?.navigationBar.scrollEdgeAppearance = appearance
+        
         navigationController?.navigationBar.barStyle = .default
         navigationController?.navigationBar.isHidden = false
     }
@@ -48,6 +48,12 @@ class FeedController: UICollectionViewController {
         
     }
     
+    @objc func handleLeftNavigationItemTapped() {
+        guard let user = user else { return }
+        let controller = ProfileController(user: user)
+        navigationController?.pushViewController(controller, animated: true)
+    }
+    
     // MARK: - API
     func fetchSingleEventTweet() {
         collectionView.refreshControl?.beginRefreshing()
@@ -55,17 +61,18 @@ class FeedController: UICollectionViewController {
             self.tweets = tweets.sorted(by: { $0.timestamp ?? Date() > $1.timestamp ?? Date() })
             self.checkIfUserLikedTweets(self.tweets)
             self.collectionView.refreshControl?.endRefreshing()
-
+            
         }
         
     }
     
     func fetchTweets() {
-                collectionView.refreshControl?.beginRefreshing()
+        collectionView.refreshControl?.beginRefreshing()
         TweetService.shared.fetchTweets { tweets in
             self.tweets = tweets.sorted(by: { $0.timestamp ?? Date() > $1.timestamp ?? Date() })
             self.checkIfUserLikedTweets(self.tweets)
-                        self.collectionView.refreshControl?.endRefreshing()
+            print("DEBUG: FETCH TWEETS")
+            self.collectionView.refreshControl?.endRefreshing()
         }
     }
     
@@ -111,9 +118,12 @@ class FeedController: UICollectionViewController {
         profileImageView.layer.cornerRadius = 32 / 2
         profileImageView.layer.masksToBounds = true
         
+        let tap = UITapGestureRecognizer(target: self, action: #selector(handleLeftNavigationItemTapped))
+        profileImageView.addGestureRecognizer(tap)
+        profileImageView.isUserInteractionEnabled = true
+        
         profileImageView.sd_setImage(with: user.profileImageUrl)
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: profileImageView)
-        
     }
 }
