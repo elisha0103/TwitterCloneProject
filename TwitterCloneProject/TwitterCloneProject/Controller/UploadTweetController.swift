@@ -92,6 +92,9 @@ class UploadTweetController: UIViewController, UITextViewDelegate {
                 NotificationService.shared.uploadNotification(toUser: tweet.user, type: .reply, tweetID: tweet.tweetID)
             }
             
+            let tweetID = ref.key
+            self.uploadMentionNotification(forCaption: caption, tweetID: tweetID)
+            
             self.dismiss(animated: true)
         }
         
