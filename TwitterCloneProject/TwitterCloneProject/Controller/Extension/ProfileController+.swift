@@ -48,7 +48,14 @@ extension ProfileController {
 extension ProfileController: UICollectionViewDelegateFlowLayout {
     // Header
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        return CGSize(width: view.frame.width, height: 350)
+        
+        var height: CGFloat = 300
+        
+        if !user.bio.isEmpty {
+            height += 50
+        }
+        
+        return CGSize(width: view.frame.width, height: height)
     }
     
     // Cell
@@ -96,7 +103,7 @@ extension ProfileController: ProfileHeaderDelegate {
                 self.user.isFollowed = true
                 self.collectionView.reloadData()
                 
-                NotificationService.shared.uploadNotification(type: .follow, user: self.user)
+                NotificationService.shared.uploadNotification(toUser: self.user, type: .follow)
             }
         }
     }

@@ -58,8 +58,6 @@ extension TweetController: UICollectionViewDelegateFlowLayout {
 // MARK: - TweetHeaderDelegate
 extension TweetController: TweetHeaderDelegate {
     func handleInteractAction() {
-        
-        
         if user.isCurrentUser {
             print("DEBUG: DELETE TWEET ACTION")
             navigationController?.popViewController(animated: true)
