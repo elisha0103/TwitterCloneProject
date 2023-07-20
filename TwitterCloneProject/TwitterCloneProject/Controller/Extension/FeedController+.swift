@@ -71,7 +71,7 @@ extension FeedController: TweetCellDelegate {
             // only upload notification if tweet6 is being liked
             guard !tweet.didLike else { return } // didLike == true 통과
             
-            NotificationService.shared.uploadNotification(type: .like, tweet: tweet)
+            NotificationService.shared.uploadNotification(toUser: tweet.user, type: .like, tweetID: tweet.tweetID)
         }
     }
     
