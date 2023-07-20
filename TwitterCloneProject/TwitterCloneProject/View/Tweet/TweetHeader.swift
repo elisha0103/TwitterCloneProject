@@ -198,29 +198,27 @@ class TweetHeader: UICollectionReusableView {
     
     // MARK: - Selectors
     @objc func handleProfileImageTapped() {
-        print("DEBUG: Go to user profiles")
+        delegate?.handleProfileImageTapped(self)
     }
     
     @objc func showActionSheet() {
         print("DEBUG: Handle show action sheet")
-        
-        
     }
     
     @objc func handleCommentTapped() {
-        
+        delegate?.handleReplyTapped(self)
     }
     
     @objc func handleRetweetTapped() {
-        
+        print("DEBUG: Tapped Comment Button")
     }
     
     @objc func handleLikeTapped() {
-        
+        delegate?.handleLikeTapped(self)
     }
     
     @objc func handleShareTapped() {
-        
+        print("DEBUG: Tapped Share Button")
     }
     
     // MARK: - Helpers
@@ -294,5 +292,4 @@ class TweetHeader: UICollectionReusableView {
             self.delegate?.handleFetchUser(withUserName: userName)
         }
     }
-
 }

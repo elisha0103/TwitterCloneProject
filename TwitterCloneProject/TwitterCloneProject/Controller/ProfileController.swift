@@ -6,16 +6,20 @@
 //
 
 import UIKit
+import Firebase
 
 class ProfileController: UICollectionViewController {
     // MARK: - Properties
     var user: User
+    var currentUser: User?
     
     var selectedFilter: ProfileFilterOptions = .tweets {
         didSet { collectionView.reloadData() }
     }
     
-    var tweets: [Tweet] = []
+    var tweets: [Tweet] = [] {
+        didSet { collectionView.reloadData() }
+    }
     var likedTweets: [Tweet] = []
     var replies: [Tweet] = []
     
@@ -48,6 +52,7 @@ class ProfileController: UICollectionViewController {
         fetchReplies()
         checkIfUserIsFollowed()
         fetchUserStats()
+        fetchCurrentUser()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -62,14 +67,22 @@ class ProfileController: UICollectionViewController {
     // MARK: - API
     func fetchTweets() {
         TweetService.shared.fetchTweets(forUser: user) { tweets in
-            self.tweets = tweets
-            self.collectionView.reloadData()
+            self.tweets = tweets.sorted(by: { $0.timestamp ?? Date() > $1.timestamp ?? Date() })
+            self.checkIfUserLikedTweets(self.tweets)
         }
     }
     
     func fetchLikedTweets() {
         TweetService.shared.fetchLikes(forUser: user) { tweets in
-            self.likedTweets = tweets
+            self.likedTweets = tweets.sorted(by: { $0.timestamp ?? Date() > $1.timestamp ?? Date() })
+            self.checkIfUserLikedTweets(self.likedTweets)
+        }
+    }
+    
+    func fetchReplies() {
+        TweetService.shared.fetchReplies(forUser: user) { tweets in
+            self.replies = tweets.sorted(by: { $0.timestamp ?? Date() > $1.timestamp ?? Date() })
+            self.checkIfUserLikedTweets(self.replies)
         }
     }
     
@@ -87,9 +100,21 @@ class ProfileController: UICollectionViewController {
         }
     }
     
-    func fetchReplies() {
-        TweetService.shared.fetchReplies(forUser: user) { tweets in
-            self.replies = tweets
+    func fetchCurrentUser() {
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        UserService.shared.fetchUser(uid: uid) { user in
+            self.currentUser = user
+        }
+    }
+    
+    func checkIfUserLikedTweets(_ tweets: [Tweet]) {
+        self.tweets.forEach { tweet in
+            TweetService.shared.checkIfUserLikedTweet(tweet) { didLike in
+                guard didLike == true else { return }
+                if let index = self.tweets.firstIndex(where: { $0.tweetID == tweet.tweetID }) {
+                    self.tweets[index].didLike = true
+                }
+            }
         }
     }
 

@@ -86,23 +86,13 @@ class ProfileHeader: UICollectionReusableView {
     
     private lazy var followingLabel: UILabel = {
         let label = UILabel()
-        label.text = "0 Following"
-        
-        let followTap = UITapGestureRecognizer(target: self, action: #selector(handleFollowersTapped))
-        label.isUserInteractionEnabled = true
-        label.addGestureRecognizer(followTap)
         
         return label
     }()
     
     private lazy var followersLabel: UILabel = {
         let label = UILabel()
-        
-        label.text = "2 Followers"
-        let followTap = UITapGestureRecognizer(target: self, action: #selector(handleFollowingTapped))
-        label.isUserInteractionEnabled = true
-        label.addGestureRecognizer(followTap)
-        
+                
         return label
     }()
     
@@ -160,15 +150,7 @@ class ProfileHeader: UICollectionReusableView {
     @objc func handleDismissal() {
         delegate?.handleDismissal()
     }
-    
-    @objc func handleFollowersTapped() {
-
-    }
-    
-    @objc func handleFollowingTapped() {
         
-    }
-    
     // MARK: - Helpers
     func configure() {
         guard let user = user else { return }

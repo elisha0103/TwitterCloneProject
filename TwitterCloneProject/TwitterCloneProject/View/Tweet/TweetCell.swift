@@ -8,13 +8,6 @@
 import UIKit
 import ActiveLabel
 
-protocol TweetCellDelegate: AnyObject {
-    func handleProfileImageTapped(_ cell: TweetCell)
-    func handleReplyTapped(_ cell: TweetCell)
-    func handleLikeTapped(_ cell: TweetCell)
-    func handleFetchUser(withUserName userName: String)
-}
-
 class TweetCell: UICollectionViewCell {
     // MARK: - Properties
     var tweet: Tweet? { didSet { configureUI() } }
@@ -150,7 +143,7 @@ class TweetCell: UICollectionViewCell {
     }
     
     @objc func handleRetweetTapped() {
-        
+        print("DEBUG: Tapped Retweet Button")
     }
     
     @objc func handleLikeTapped() {
@@ -158,7 +151,7 @@ class TweetCell: UICollectionViewCell {
     }
     
     @objc func handleShareTapped() {
-        
+        print("DEBUG: Tapped Share Button")
     }
     
     // MARK: - Helpers
