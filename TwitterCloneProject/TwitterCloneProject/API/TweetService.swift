@@ -49,22 +49,18 @@ struct TweetService {
     
     // 모든 트윗 fetch
     func fetchTweets(completion: @escaping([Tweet]) -> Void) {
-        print("DEBUG: TweetService fetchTweets")
-        let random: String = Date().description
         var tweets: [Tweet] = []
         guard let currentuid = Auth.auth().currentUser?.uid else { return }
-        
+
         // following 한 사람들 목록
         REF_USER_FOLLOWING.child(currentuid).observe(.childAdded) { snapshot in
             let followinguid = snapshot.key
-            
+
             // following 한 사람들의 tweet 목록
             REF_USER_TWEETS.child(followinguid).observe(.childAdded) { snapshot in
                 let tweetID = snapshot.key
                 self.fetchTweet(withTweetID: tweetID) { tweet in
                     tweets.append(tweet)
-                    print("DEBUG: TweetService fetchTweets: \(random.description)")
-                    print("DEBUG: TweetService tweets: \(tweets.count)")
                     completion(tweets)
                 }
             }
@@ -81,10 +77,13 @@ struct TweetService {
         REF_USER_FOLLOWING.child(currentuid).observe(.childRemoved) { snapshot in
             let followinguid = snapshot.key
             
-            if let index = tweets.firstIndex(where: { $0.user.uid == followinguid }) {
-                tweets.remove(at: index)
-                completion(tweets)
+            tweets.forEach { tweet in
+                if let index = tweets.firstIndex(where: { $0.user.uid == followinguid }) {
+                    tweets.remove(at: index)
+                }
             }
+            
+            completion(tweets)
         }
         
     }

@@ -7,9 +7,16 @@
 
 import UIKit
 
-class ExploreController: UITableViewController {
+enum SearchControllerConfiguration {
+    case message
+    case userSearch
+}
+
+class SearchController: UITableViewController {
 
     // MARK: - Properties
+    private let config: SearchControllerConfiguration
+    
     let exploreCellIdentifier: String = "exploreCell"
     var users: [User] = [] {
         didSet {
@@ -36,6 +43,15 @@ class ExploreController: UITableViewController {
     }
     
     // MARK: - Lifecycle
+    init(config: SearchControllerConfiguration) {
+        self.config = config
+        super.init(style: .plain)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -60,14 +76,23 @@ class ExploreController: UITableViewController {
         }
     }
     
+    // MARK: - Selectors
+    @objc func handleDismissal() {
+        dismiss(animated: true)
+    }
+    
     // MARK: - Helpers
     func configureUI() {
         view.backgroundColor = .systemBackground
-        navigationItem.title = "Explore"
+        navigationItem.title = config == .message ? "New Message" : "Explore"
         
         tableView.register(UserCell.self, forCellReuseIdentifier: exploreCellIdentifier)
         tableView.rowHeight = 60
         tableView.separatorStyle = .none
+        
+        if config == .message {
+            navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(handleDismissal))
+        }
     }
     
     func configureSearchController() {

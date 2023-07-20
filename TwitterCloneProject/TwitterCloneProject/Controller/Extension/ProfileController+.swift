@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Firebase
 
 // MARK: UICollectionViewDataSource
 extension ProfileController {
@@ -21,7 +22,7 @@ extension ProfileController {
         
         return cell
     }
-        
+    
 }
 
 // MARK: - UICollectionViewDelegate
@@ -41,7 +42,7 @@ extension ProfileController {
         let controller = TweetController(tweet: tweet, user: tweet.user)
         navigationController?.pushViewController(controller, animated: true)
     }
-
+    
 }
 
 // MARK: - UICollectionViewDelegateFlowLayout
@@ -93,13 +94,11 @@ extension ProfileController: ProfileHeaderDelegate {
         // 본인 계정이 아닌경우
         if user.isFollowed { // Unfollow 하는 로직
             UserService.shared.unfollowUser(uid: user.uid) { error, ref in
-                print("DEBUG: Did complete follow in backend...")
                 self.user.isFollowed = false
                 self.collectionView.reloadData()
             }
         } else { // Follow 하는 로직
             UserService.shared.followUser(uid: user.uid) { error, ref in
-                print("DEBUG: Did unfollow user in backed...")
                 self.user.isFollowed = true
                 self.collectionView.reloadData()
                 
@@ -119,5 +118,18 @@ extension ProfileController: EditProfileControllerDelegate {
         controller.dismiss(animated: true)
         self.user = user
         self.collectionView.reloadData()
+    }
+    
+    func handleLogout() {
+        do {
+            try Auth.auth().signOut()
+            let logInNavigation = UINavigationController(rootViewController: LoginController())
+            logInNavigation.modalPresentationStyle = .fullScreen
+            self.present(logInNavigation, animated: true)
+
+        } catch let error {
+            print("DEBUG: SignOut error - \(error.localizedDescription)")
+        }
+        
     }
 }

@@ -267,7 +267,6 @@ class TweetHeader: UICollectionReusableView {
             case .delete, .follow(_), .unfollow(_):
                 // user.isCurrentUser ? true(속성 빨간색) : false(속성 없음)
                 action = UIAction(title: option.description, image: image, attributes: user.isCurrentUser ? .destructive : []) { _ in
-                    print("DEBUG: interact Action")
                     self.delegate?.handleInteractAction()
                 }
                 
