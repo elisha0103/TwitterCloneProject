@@ -60,7 +60,6 @@ class EditProfileController: UITableViewController {
         
         if isUserInfoChanged && !isImageChanged {
             UserService.shared.saveUserData(user: user) { err, ref in
-                print("DEBUG: Did update user info..")
                 
                 self.delegate?.controller(self, wantsToUpdate: self.user)
             }

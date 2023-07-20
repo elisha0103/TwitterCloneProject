@@ -59,20 +59,17 @@ extension TweetController: UICollectionViewDelegateFlowLayout {
 extension TweetController: TweetHeaderDelegate {
     func handleInteractAction() {
         if user.isCurrentUser {
-            print("DEBUG: DELETE TWEET ACTION")
             navigationController?.popViewController(animated: true)
             TweetService.shared.deleteTweet(forTweet: tweet) { error, ref in
                 self.navigationController?.popViewController(animated: true)
             }
         } else if user.isFollowed {
             UserService.shared.unfollowUser(uid: user.uid) { error, ref in
-                print("DEBUG: Did complete follow in backend...")
                 self.user.isFollowed = false
                 self.collectionView.reloadData()
             }
         } else {
             UserService.shared.followUser(uid: user.uid) { error, ref in
-                print("DEBUG: Did unfollow user in backed...")
                 self.user.isFollowed = true
                 self.collectionView.reloadData()
             }

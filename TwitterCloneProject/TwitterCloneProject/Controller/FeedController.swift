@@ -48,6 +48,12 @@ class FeedController: UICollectionViewController {
         
     }
     
+    @objc func handleProfileImageTapped() {
+        guard let user = user else { return }
+        let controller = ProfileController(user: user)
+        navigationController?.pushViewController(controller, animated: true)
+    }
+    
     // MARK: - API
     func fetchSingleEventTweet() {
         collectionView.refreshControl?.beginRefreshing()
@@ -111,9 +117,12 @@ class FeedController: UICollectionViewController {
         profileImageView.layer.cornerRadius = 32 / 2
         profileImageView.layer.masksToBounds = true
         
+        let tap = UITapGestureRecognizer(target: self, action: #selector(handleProfileImageTapped))
+        profileImageView.addGestureRecognizer(tap)
+        profileImageView.isUserInteractionEnabled = true
+        
         profileImageView.sd_setImage(with: user.profileImageUrl)
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: profileImageView)
-        
     }
 }

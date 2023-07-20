@@ -49,8 +49,6 @@ struct TweetService {
     
     // 모든 트윗 fetch
     func fetchTweets(completion: @escaping([Tweet]) -> Void) {
-        print("DEBUG: TweetService fetchTweets")
-        let random: String = Date().description
         var tweets: [Tweet] = []
         guard let currentuid = Auth.auth().currentUser?.uid else { return }
         
@@ -63,8 +61,6 @@ struct TweetService {
                 let tweetID = snapshot.key
                 self.fetchTweet(withTweetID: tweetID) { tweet in
                     tweets.append(tweet)
-                    print("DEBUG: TweetService fetchTweets: \(random.description)")
-                    print("DEBUG: TweetService tweets: \(tweets.count)")
                     completion(tweets)
                 }
             }

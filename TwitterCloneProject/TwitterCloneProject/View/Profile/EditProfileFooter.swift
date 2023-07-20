@@ -42,7 +42,6 @@ class EditProfileFooter: UIView {
     
     // MARK: - Selectors
     @objc func handleLogout() {
-        print("DEBUG: TAP LOGGOUT BUTTON")
         delegate?.handleLogout()
     }
 }
