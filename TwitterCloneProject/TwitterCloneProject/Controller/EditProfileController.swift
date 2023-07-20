@@ -9,6 +9,7 @@ import UIKit
 
 protocol EditProfileControllerDelegate: AnyObject {
     func controller(_ controller: EditProfileController, wantsToUpdate user: User)
+    func handleLogout()
 }
 
 class EditProfileController: UITableViewController {
@@ -16,6 +17,8 @@ class EditProfileController: UITableViewController {
     // MARK: - Properties
     var user: User
     private lazy var headerView = EditProfileHeader(user: user)
+    private let footerView = EditProfileFooter()
+    
     let imagePicker = UIImagePickerController()
     weak var delegate: EditProfileControllerDelegate?
     
@@ -120,8 +123,11 @@ class EditProfileController: UITableViewController {
     func configureTableView() {
         tableView.tableHeaderView = headerView
         headerView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 180)
-        tableView.tableFooterView = UIView()
+        tableView.tableFooterView = footerView
+        footerView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 100)
+        
         headerView.delegate = self
+        footerView.delegate = self
         
         tableView.register(EditProfileCell.self, forCellReuseIdentifier: reuseableIdentifier)
         
