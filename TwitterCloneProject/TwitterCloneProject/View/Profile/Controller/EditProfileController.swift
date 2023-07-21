@@ -7,11 +7,6 @@
 
 import UIKit
 
-protocol EditProfileControllerDelegate: AnyObject {
-    func controller(_ controller: EditProfileController, wantsToUpdate user: User)
-    func handleLogout()
-}
-
 class EditProfileController: UITableViewController {
 
     // MARK: - Properties
