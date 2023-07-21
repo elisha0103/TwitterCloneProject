@@ -52,27 +52,40 @@ struct TweetService {
         var tweets: [Tweet] = []
         guard let currentuid = Auth.auth().currentUser?.uid else { return }
 
-        // following 한 사람들 목록
-        REF_USER_FOLLOWING.child(currentuid).observe(.childAdded) { snapshot in
-            let followinguid = snapshot.key
+        REF_USER_FOLLOWING.child(currentuid).observeSingleEvent(of: .value) { snapshot in
+            if snapshot.exists() {
+                // following 한 사람들 목록
+                REF_USER_FOLLOWING.child(currentuid).observe(.childAdded) { snapshot in
+                    let followinguid = snapshot.key
 
-            // following 한 사람들의 tweet 목록
-            REF_USER_TWEETS.child(followinguid).observe(.childAdded) { snapshot in
-                let tweetID = snapshot.key
-                self.fetchTweet(withTweetID: tweetID) { tweet in
-                    tweets.append(tweet)
-                    completion(tweets)
+                    // following 한 사람들의 tweet 목록
+                    REF_USER_TWEETS.child(followinguid).observe(.childAdded) { snapshot in
+                        let tweetID = snapshot.key
+                        self.fetchTweet(withTweetID: tweetID) { tweet in
+                            tweets.append(tweet)
+                            completion(tweets)
+                        }
+                    }
                 }
-            }
-        }
-        
-        REF_USER_TWEETS.child(currentuid).observe(.childAdded) { snapshot in
-            let tweetID = snapshot.key
-            self.fetchTweet(withTweetID: tweetID) { tweet in
-                tweets.append(tweet)
+            } else {
                 completion(tweets)
             }
         }
+        
+        REF_USER_TWEETS.child(currentuid).observeSingleEvent(of: .value) { snapshot in
+            if snapshot.exists() {
+                REF_USER_TWEETS.child(currentuid).observe(.childAdded) { snapshot in
+                    let tweetID = snapshot.key
+                    self.fetchTweet(withTweetID: tweetID) { tweet in
+                        tweets.append(tweet)
+                        completion(tweets)
+                    }
+                }
+            } else {
+                completion(tweets)
+            }
+        }
+        
         
         REF_USER_FOLLOWING.child(currentuid).observe(.childRemoved) { snapshot in
             let followinguid = snapshot.key

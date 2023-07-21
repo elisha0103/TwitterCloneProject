@@ -1,5 +1,5 @@
 //
-//  ExploreController.swift
+//  SearchController.swift
 //  TwitterCloneProject
 //
 //  Created by 진태영 on 2023/06/16.
