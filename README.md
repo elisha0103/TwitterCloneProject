@@ -22,7 +22,7 @@
  - FCM 도입시 알림 처리를 위한 Notification 데이터 모델 구현
  - Tweet 객체의 Database 객체를 구조화하여 리트윗 기능을 구현
  - 유저의 트윗, 리트윗, 좋아요 Filter 구현
- - Profile 이미지 캐시 구현
+ - API Data(Profile) 이미지 캐시 구현
  - `다크/라이트 모드` 전환에 대응
 
 <br>
