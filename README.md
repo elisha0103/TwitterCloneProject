@@ -10,7 +10,7 @@
 ## 프로젝트 목표
 > - Codebase UI 구현하기
 > - Delegate 패턴 이해하기
-> - 비동기 처리에 따른 Lifecycle 이해하기
+> - 비동기 처리의 Call back 흐름 제어하기
 > - 실제 Twitter 앱 참고하여 UI/UX 반영하기
 > - 효율적인 관계형 데이터베이스 테이블 구성하기
 
