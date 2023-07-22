@@ -8,7 +8,7 @@
 <br>
 
 ## 프로젝트 목표
-> - Codebase로 UI 구현하기
+> - Codebase UI 구현하기
 > - Delegate 패턴 이해하기
 > - 비동기 처리에 따른 Lifecycle 이해하기
 > - 실제 Twitter 앱 참고하여 UI/UX 반영하기
